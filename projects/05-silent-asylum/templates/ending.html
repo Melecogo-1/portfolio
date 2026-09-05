@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>死寂疗养院 | {{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="ending-body ending-{{ ending_type }}">
+    <div class="ambient-grid"></div>
+    <main class="ending-container">
+        {% if ending_type == 'bad' %}
+        <section class="bad-ending-screen">
+            <p class="case-label">BAD ENDING</p>
+            <div class="be-text">
+                {% for line in text.split('\n') %}
+                <p>{{ line }}</p>
+                {% endfor %}
+            </div>
+            <p class="be-question">你死了。</p>
+            <div class="ending-buttons">
+                <a href="{{ url_for('index') }}" class="ending-btn">返回主菜单</a>
+            </div>
+        </section>
+        {% else %}
+        <section class="ending-screen">
+            <p class="case-label">FINAL REPORT</p>
+            <h1 class="ending-title">{{ title }}</h1>
+            <div class="ending-text">
+                {% for line in text.split('\n') %}
+                <p>{{ line }}</p>
+                {% endfor %}
+            </div>
+            <div class="ending-epilogue">
+                <p class="epilogue-text">{{ epilogue }}</p>
+            </div>
+            <div class="ending-stats">
+                <p>最终精神侵蚀度：{{ erosion }} / 100</p>
+                <p>已收集信息碎片：{{ fragments }} / 18</p>
+            </div>
+            <div class="ending-buttons">
+                <a href="{{ url_for('new_game') }}" class="ending-btn primary">重新开始</a>
+                <a href="{{ url_for('index') }}" class="ending-btn">返回主菜单</a>
+            </div>
+        </section>
+        {% endif %}
+    </main>
+</body>
+</html>

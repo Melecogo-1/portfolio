@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>凌煜圣 LING YUSHENG · 全栈 / AI 应用作品集</title>
+  <meta name="description" content="凌煜圣的全栈作品集，5 个独立完成并部署上线的 Web 项目，技术栈 Python / Flask、原生 JavaScript、Three.js、Render。" />
+  <link rel="stylesheet" href="./styles.css?v=scout-3d-03" />
+</head>
+<body>
+  <!-- 首屏加载层：15MB 模型需要几秒，用进度层换第一印象 -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <div class="pre-inner">
+      <div class="pre-mark">LYS</div>
+      <div class="pre-title">凌煜圣 · 全栈 / AI 应用</div>
+      <div class="pre-track"><i id="preFill"></i></div>
+      <div class="pre-meta"><span class="mono" id="prePct">00</span><span id="preLabel">正在加载 3D 场景 …</span></div>
+    </div>
+  </div>
+
+  <!-- 自定义光标（仅桌面指针设备） -->
+  <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+
+  <main class="portfolio-shell">
+    <section class="stage" id="stage">
+      <div id="threeStage" class="three-stage" aria-label="3D portfolio stage"></div>
+      <canvas id="fallbackStage" class="fallback-stage" aria-hidden="true"></canvas>
+      <div class="stage-vignette" aria-hidden="true"></div>
+      <div class="ground-shadow" aria-hidden="true"></div>
+      <div class="ground-ring ring-one" aria-hidden="true"></div>
+      <div class="ground-ring ring-two" aria-hidden="true"></div>
+      <div class="noise-layer" aria-hidden="true"></div>
+      <div class="project-signal" id="projectSignal" aria-hidden="true"><span></span><small>ARCHIVE LINK STABLE</small></div>
+
+      <header class="site-mark">
+        <a class="brand" href="#stage" aria-label="返回首页">
+          <span class="brand-mark">LYS</span>
+          <span class="brand-text">凌煜圣<small>LING YUSHENG</small></span>
+        </a>
+        <nav class="site-tools" aria-label="站点工具">
+          <span class="year mono">FULL-STACK / AI · 2027</span>
+          <button class="resume-toggle" id="resumeToggle" type="button" aria-controls="resumeDossier" aria-expanded="false">履历 / CV</button>
+        </nav>
+      </header>
+
+      <section class="hero-copy" aria-label="Portfolio statement">
+        <p class="mono">FIVE SHIPPED WEB PROJECTS · DEPLOYED</p>
+        <h1>从数据与模型，<br />到能跑起来的产品。</h1>
+      </section>
+
+      <p class="guide-whisper mono"><span id="guideHint">点击环绕的档案卡进入项目 · ← → 切换 · Esc 关闭</span></p>
+      <nav class="project-orbit" id="projectOrbit" aria-label="精选项目"></nav>
+
+      <!-- 深度项目档案 -->
+      <aside class="project-file" id="projectFile" aria-live="polite" aria-hidden="true">
+        <button class="close-file" type="button" id="closeProjectFile" aria-label="关闭项目档案">×</button>
+        <div class="file-index mono" id="fileType">档案 01</div>
+        <div class="file-cover" id="fileCoverFrame"><img id="fileCover" alt="项目预览" /></div>
+        <h2 id="fileTitle">Project</h2>
+        <p class="file-outcome" id="fileOutcome"></p>
+
+        <p class="block-kicker mono" id="howKicker">HOW IT WORKS / 怎么实现</p>
+        <p class="file-how" id="fileHow"></p>
+
+        <div class="file-metrics" id="fileMetrics"></div>
+
+        <p class="block-kicker mono" id="proofKicker">KEY CALLS / 难点与处理</p>
+        <div class="file-proof" id="fileProof"></div>
+
+        <div class="mini-tags" id="fileTags"></div>
+        <div class="file-actions">
+          <button class="launch-project" type="button" id="launchProject">进入体验 <span>↗</span></button>
+        </div>
+      </aside>
+
+      <!-- 创意终端：纯前端确定性生成，零后端、零 API Key -->
+      <aside class="terminal-panel" id="engine" aria-hidden="true">
+        <button class="close-file" type="button" id="closeEngine" aria-label="关闭创意终端">×</button>
+        <p class="terminal-kicker mono">CREATIVE TERMINAL · LOCAL</p>
+        <h2>输入一句灵感</h2>
+        <p class="terminal-note">本地确定性推演，不请求任何外部接口。</p>
+        <textarea id="briefInput" rows="4" placeholder="例如：雨夜赛博茶馆，茶客都没有影子"></textarea>
+        <div class="quick-prompts" id="quickPrompts"></div>
+        <button class="generate-action" id="generateBtn" type="button"><span>生成创意档案</span><span>→</span></button>
+        <p class="engine-state mono" id="reactorState">READY</p>
+      </aside>
+
+      <aside class="result-file" id="resultPanel" aria-live="polite" aria-hidden="true">
+        <button class="close-file" type="button" id="closeResult" aria-label="关闭生成档案">×</button>
+        <p class="terminal-kicker mono">GENERATED FILE</p>
+        <h2 id="conceptTitle">创意档案</h2>
+        <p id="creativeThesis"></p>
+        <div class="brief-facts"><span id="audience"></span><span id="outputFormat"></span></div>
+        <p class="worldview" id="worldview"></p>
+        <div class="palette" id="palette"></div>
+        <div class="tag-list" id="keywords"></div>
+        <pre id="imagePrompt"></pre>
+        <button class="copy-prompt" id="copyPrompt" type="button">复制 Prompt</button>
+      </aside>
+
+      <!-- 履历（网页内速览，投递版 PDF 可下载） -->
+      <aside class="resume-dossier" id="resumeDossier" aria-hidden="true" aria-label="凌煜圣个人简历">
+        <button class="close-file" type="button" id="closeResume" aria-label="关闭个人简历">×</button>
+        <section class="resume-identity">
+          <div class="resume-photo"><img src="./assets/profile/ling-yusheng.jpg" alt="凌煜圣" /></div>
+          <p class="resume-kicker mono">PERSONNEL FILE / 2027</p>
+          <h2>凌煜圣</h2>
+          <p class="resume-name mono">LING YUSHENG</p>
+          <p class="resume-role">全栈 / 后端开发（AI 应用方向）· 2027 届校招</p>
+          <div class="resume-contact">
+            <span>17783190642</span>
+            <span>1793838655@qq.com</span>
+            <span>重庆 · 全国任意城市可到岗</span>
+            <span>重庆财经学院 · 讯飞人工智能学院 · 人工智能（本科）2023.09–2027.06</span>
+          </div>
+          <a class="resume-download" href="./assets/resume/ling-yusheng-fullstack-resume.pdf" target="_blank" rel="noopener">下载投递版 PDF <span>↓</span></a>
+        </section>
+        <section class="resume-content">
+          <p class="resume-kicker mono">FULL-STACK / AI APPLICATION</p>
+          <h3>从数据与模型，到能跑起来的全栈产品。</h3>
+          <p class="resume-lead">人工智能专业 2027 届。后端、前端、数据库到部署均独立完成，写了 5 个能跑、也部署上线的 Web 项目，主要用 Python/Flask、原生 JS、SQLite 和 Render；2025 年暑假在重庆云幕科技做过三个月三维可视化。</p>
+          <div class="resume-grid">
+            <section>
+              <h4 class="mono">技术能力</h4>
+              <p><b>后端</b>Python · Flask · 标准库 HTTP 服务 · REST · SQLite · 规则引擎与数值驱动状态流转</p>
+              <p><b>前端</b>HTML / CSS / 原生 JavaScript · ECharts · Canvas · Three.js</p>
+              <p><b>数据</b>pandas 清洗与脱敏 · 指标口径建模 · 二十万条级订单/账单聚合</p>
+              <p><b>AI 工程</b>LLM 接入与输出约束（白名单/数值钳制/降级）· DeepSeek / Ollama 本地调用 · ComfyUI 节点式出图 · Prompt</p>
+              <p><b>工程化</b>Git · Render Blueprint 多服务编排 · Pillow 图像处理与感知哈希</p>
+            </section>
+            <section>
+              <h4 class="mono">教育</h4>
+              <p><b>重庆财经学院</b>讯飞人工智能学院 · 人工智能（本科）2023.09–2027.06</p>
+              <h4 class="resume-subhead mono">目标方向</h4>
+              <p>全栈 / 后端开发（AI 应用方向）<br />AI 应用工程师 / FDE</p>
+            </section>
+          </div>
+          <section class="resume-experience">
+            <h4 class="mono">实习经历 / 重庆云幕科技 · 2025.07–09</h4>
+            <p class="experience-role">三维建模与可视化项目实习</p>
+            <ul>
+              <li>曾家岩隧道动画：修正主体、匝道与通风设施穿模失真，精简面数并反复适配镜头。</li>
+              <li>上海人民医院数字沙盘：依据施工图搭建全院区模型并统一轻量化。</li>
+              <li>模型 240 万面 → 38 万面稳定 60fps，调试时间缩短约 40%，两个月一次性验收。</li>
+            </ul>
+          </section>
+          <section class="resume-projects">
+            <h4 class="mono">作品（点击展厅卡片查看）</h4>
+            <span>AI-DataPilot · 经营数据分析</span>
+            <span>Dream Weaver · 互动叙事后端</span>
+            <span>一源树多服务 · 云部署</span>
+            <span>Creative Engine Lab · AIGC 工具</span>
+            <span>Silent Asylum · 文字互动游戏</span>
+          </section>
+        </section>
+      </aside>
+
+      <button class="terminal-dock" id="engineToggle" type="button" aria-expanded="false" aria-controls="engine">
+        <span class="terminal-icon mono">AI</span>
+        <span><strong>创意终端</strong><small class="mono">本地推演一条灵感</small></span>
+      </button>
+
+      <footer class="tech-strip">
+        <span class="mono" id="serverStatus">LOCAL ENGINE</span>
+        <span class="mono">Python · Flask · SQLite · Three.js · Render</span>
+      </footer>
+    </section>
+  </main>
+
+  <script src="./vendor/three.min.js"></script>
+  <script src="./vendor/GLTFLoader.js"></script>
+  <script src="./app.js?v=scout-3d-03"></script>
+</body>
+</html>

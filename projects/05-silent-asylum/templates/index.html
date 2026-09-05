@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>死寂疗养院 | Silent Asylum</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="menu-body poster-menu">
+    <div class="ambient-grid"></div>
+    <main class="menu-shell poster-shell">
+        <section class="menu-hero poster-hero" aria-label="游戏标题">
+            <div class="hero-image" aria-hidden="true"></div>
+            <div class="hero-shade" aria-hidden="true"></div>
+            <div class="hero-copy">
+                <p class="case-label">CASE FILE 1943-2026</p>
+                <h1>死寂疗养院</h1>
+                <p class="menu-subtitle">SILENT ASYLUM</p>
+                <p class="menu-brief">阅读规则，保存碎片，在侵蚀抵达尽头前离开。不要相信每一张纸，也不要相信纸背后的空白。</p>
+            </div>
+            <div class="hero-stamp" aria-hidden="true">SEALED</div>
+        </section>
+
+        <section class="menu-actions dossier-actions" aria-label="主菜单">
+            <div class="dossier-header">
+                <span class="dossier-kicker">ADMISSION FILE</span>
+                <strong>陈默 / 状态未明</strong>
+            </div>
+            <a href="{{ url_for('new_game') }}" class="menu-btn primary">
+                <span>开始调查</span>
+                <small>NEW RUN</small>
+            </a>
+
+            {% if saves %}
+            <div class="continue-section">
+                <p class="continue-label">封存档案</p>
+                {% for save in saves %}
+                <a href="{{ url_for('load_game', slot=save.slot) }}" class="menu-btn save-btn case-save {% if save.erosion >= 80 %}critical{% endif %}">
+                    <span class="save-index">档案 {{ '%02d'|format(loop.index) }}</span>
+                    <span class="save-main">场景 {{ save.scene }} · 侵蚀度 {{ save.erosion }}</span>
+                    <small>碎片 {{ save.fragments }}/18 · {{ save.time }}</small>
+                </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <div class="dossier-footer poster-notice" aria-label="调查须知">
+                <div>
+                    <span class="dossier-kicker">PATIENT NOTICE</span>
+                    <p>不要把走廊尽头的光当成出口。不要相信每一条规则。不要在空白处补写自己的名字。</p>
+                </div>
+                <div class="dossier-stats">
+                    <span>5 个区域</span>
+                    <span>18 枚碎片</span>
+                    <span>16 个结局</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</body>
+</html>

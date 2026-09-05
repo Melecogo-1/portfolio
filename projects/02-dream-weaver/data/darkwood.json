@@ -1,0 +1,1868 @@
+{
+  "name": "黑木村",
+  "description": "群山环抱中的一座小村庄，以酿酒闻名。村口的老酒馆是方圆百里唯一的歇脚处。北面森林在风中带出一股说不清的甜腻气味，老人们说那是矿洞深处腐木和旧事混合的味道。你站在村口——风吹过，你攥紧了手里的旧信。",
+  "player_identity": {
+    "name": "林隙",
+    "backstory": "三个月前你收到一封旧信——母亲去世五年后，她的笔迹突然出现在你桌上。信上只有一句话：\"去黑木村，老汤姆的酒馆，找一个叫玛莎的女人。不要告诉任何人。\"你现在站在村口。身上有三枚银币、一封旧信、和母亲留给你的银戒指。",
+    "attributes": {
+      "strength": 5,
+      "agility": 6,
+      "intelligence": 4,
+      "charm": 5
+    },
+    "starting_cards": [
+      "old_letter",
+      "silver_ring"
+    ],
+    "starting_items": [
+      "旧信",
+      "银戒指",
+      "3枚银币"
+    ],
+    "starting_location": "village_square"
+  },
+  "locations": {
+    "tavern": {
+      "name": "酒馆",
+      "desc": "一栋两层的木石建筑，吧台后面的酒桶堆到天花板。壁炉常年烧着，空气里弥漫着麦酒和松木的味道。后厨的门虚掩着，楼梯通向二楼——那是老汤姆和玛莎的住处。"
+    },
+    "village_square": {
+      "name": "村口广场",
+      "desc": "碎石铺成的空地，中央有一口老井。村民们在这里交易、聊天、传播消息。北面是森林，东边是铁匠铺，西边是村长大屋。酒馆的烟囱冒着炊烟。"
+    },
+    "forest": {
+      "name": "北面森林",
+      "desc": "村庄北面的密林，松针铺了厚厚一层。猎人和采药人常出没的小径旁，偶尔能看到废弃的捕兽夹。深处的矿洞入口被荆棘半掩，据说已经废弃多年。"
+    },
+    "mine": {
+      "name": "废弃矿洞",
+      "desc": "矿洞入口被荆棘和蛛网封了一半。里面的空气又湿又冷，滴水声从深处传来。地上有陈旧的脚印——不是一个人的，也不是一天的。"
+    }
+  },
+  "npcs": [
+    {
+      "id": "tavern_owner",
+      "name": "老汤姆",
+      "role": "酒馆老板",
+      "location": "tavern",
+      "personality": {
+        "trait": "豪爽但贪婪",
+        "fear": "黑市交易曝光",
+        "desire": "扩大生意，赚够钱搬去城里",
+        "temper": "火爆",
+        "voice": "嗓门大，笑声像打雷，但谈到钱的时候声音会突然压低"
+      },
+      "relationships": [
+        {
+          "target": "tavern_wife",
+          "type": "夫妻",
+          "detail": "结婚十五年，感情冷淡但互相依靠。他需要她管账，她需要他撑门面。"
+        },
+        {
+          "target": "guard_captain",
+          "type": "朋友",
+          "detail": "常请马库斯喝酒，免了不少麻烦。但马库斯不知道酒馆地下藏着什么。"
+        },
+        {
+          "target": "hunter",
+          "type": "债主",
+          "detail": "雷格欠他三十枚银币。但比债务更深的——是他们在矿洞里共同的秘密。"
+        }
+      ],
+      "secrets": [
+        "黑市皮货的最大中转商",
+        "地下酒窖藏的不是酒——是从雷格那里收来的偷猎皮货",
+        "五年前有个外来女人在酒馆打听太多——后来她再也没出现过"
+      ]
+    },
+    {
+      "id": "tavern_wife",
+      "name": "玛莎",
+      "role": "酒馆老板娘",
+      "location": "tavern",
+      "personality": {
+        "trait": "胆小但精明",
+        "fear": "真相曝光，失去一切",
+        "desire": "攒够钱离开黑木村，重新开始",
+        "temper": "隐忍",
+        "voice": "说话声音很轻，但账本上的数字从来不出错"
+      },
+      "relationships": [
+        {
+          "target": "tavern_owner",
+          "type": "夫妻",
+          "detail": "感情冷淡。她知道丈夫的一切秘密——账本实际是她在管。"
+        },
+        {
+          "target": "hunter",
+          "type": "同谋",
+          "detail": "每次交货都是她和雷格接头。她不信任雷格，但别无选择。"
+        }
+      ],
+      "secrets": [
+        "手里有一本黑市交易的完整账本，藏在厨房地板下",
+        "五年前那个外来女人——她认识。那女人来找的是她。",
+        "偷偷存了一笔私房钱，准备一旦出事就跑路"
+      ]
+    },
+    {
+      "id": "guard_captain",
+      "name": "马库斯",
+      "role": "守卫队长",
+      "location": "village_square",
+      "personality": {
+        "trait": "正直但固执",
+        "fear": "失职被革",
+        "desire": "维护治安，升迁去城里",
+        "temper": "冷静",
+        "voice": "说话简洁，从不废话。但说到'正义'两个字的时候，语气会变重。"
+      },
+      "relationships": [
+        {
+          "target": "tavern_owner",
+          "type": "朋友",
+          "detail": "常一起喝酒。老汤姆是他在这村子里为数不多能聊天的人。"
+        },
+        {
+          "target": "village_chief",
+          "type": "上下级",
+          "detail": "对村长忠诚，但不喜欢村长的圆滑。"
+        },
+        {
+          "target": "hunter",
+          "type": "陌生",
+          "detail": "几乎没说过话。但最近有人在森林里听到奇怪的声音，他打算去查。"
+        }
+      ],
+      "secrets": [
+        "上次考核时隐瞒了一起盗窃案以维持破案率",
+        "一直在暗中调查森林里的偷猎活动，但没有证据——或者说，没有勇气去查酒馆"
+      ]
+    },
+    {
+      "id": "hunter",
+      "name": "雷格",
+      "role": "猎人",
+      "location": "forest",
+      "personality": {
+        "trait": "沉默但重义",
+        "fear": "被抓，或者更糟——被老汤姆灭口",
+        "desire": "还清债务，脱离黑市，恢复自由身",
+        "temper": "隐忍",
+        "voice": "话很少，每句不超过十个字。但答应你的事一定会做到。"
+      },
+      "relationships": [
+        {
+          "target": "tavern_owner",
+          "type": "欠债人",
+          "detail": "欠三十枚银币。但老汤姆不要钱——他要雷格继续供货。"
+        },
+        {
+          "target": "tavern_wife",
+          "type": "同谋",
+          "detail": "和玛莎接头交货。他知道玛莎不信任他——他也不信任玛莎。"
+        },
+        {
+          "target": "guard_captain",
+          "type": "被调查",
+          "detail": "知道守卫队长在查偷猎。他不知道的是——队长查到的线索已经离他很近了。"
+        }
+      ],
+      "secrets": [
+        "偷猎了国王的鹿，皮毛藏在矿洞深处",
+        "五年前目击了一件事——那个外来女人不是意外坠入矿洞的",
+        "曾经救过一个逃犯，收了一枚刻着\"归途\"的戒指作为报酬——后来他把戒指卖给了一个路过的商人"
+      ]
+    }
+  ],
+  "causality_cards": [
+    {
+      "id": "old_letter",
+      "name": "旧信",
+      "type": "knowledge",
+      "description": "母亲去世五年后，她的笔迹出现在你桌上。\"去黑木村，老汤姆的酒馆，找一个叫玛莎的女人。不要告诉任何人。\"",
+      "effects": {
+        "dialogue_unlock": [
+          "向玛莎出示旧信",
+          "向老汤姆打听玛莎"
+        ],
+        "dice_bonus": {
+          "charm": 2,
+          "target_npc": "tavern_wife",
+          "reason": "玛莎认出了信上的笔迹"
+        }
+      },
+      "story": "信纸已经泛黄，但墨迹是新的——像昨天才写完。你不认识母亲的笔迹，但这封信让你觉得……她一直在某个地方，看着你。"
+    },
+    {
+      "id": "silver_ring",
+      "name": "母亲的银戒指",
+      "type": "item",
+      "description": "母亲留给你唯一的东西。内侧刻着两个字：\"归途\"。",
+      "effects": {
+        "dialogue_unlock": [
+          "向玛莎出示戒指",
+          "向老汤姆提起戒指"
+        ],
+        "dice_bonus": {
+          "charm": 3,
+          "target_npc": "tavern_wife",
+          "reason": "戒指触动了玛莎内心深处的记忆"
+        }
+      },
+      "story": "戒指很旧了，银面磨得发亮。你小时候问过母亲'归途'是什么意思——她笑了笑，没有回答。"
+    },
+    {
+      "id": "tavern_favor",
+      "name": "酒馆之恩",
+      "type": "relation",
+      "description": "你帮了老汤姆一个忙。他欠你一个人情——尽管他不一定会还。",
+      "effects": {
+        "npc_attitude": {
+          "tavern_owner": 20
+        },
+        "dialogue_unlock": [
+          "老汤姆的悄悄话"
+        ],
+        "dice_bonus": {
+          "charm": 5,
+          "target_npc": "tavern_owner",
+          "reason": "老汤姆对你印象不错"
+        }
+      },
+      "story": "那天下午酒桶裂了一条缝，麦酒淌了一地。老汤姆急得团团转，你蹲下来用麻绳和松脂把裂缝堵上了。他没说谢谢——但他记住了。"
+    },
+    {
+      "id": "martha_stirred",
+      "name": "玛莎的动摇",
+      "type": "relation",
+      "description": "你给玛莎看了旧信。她认出了笔迹——那是她曾经熟悉的人。她的防线出现了裂缝。",
+      "effects": {
+        "npc_attitude": {
+          "tavern_wife": 30
+        },
+        "dialogue_unlock": [
+          "追问玛莎关于母亲",
+          "把戒指给玛莎看"
+        ]
+      },
+      "story": "玛莎看到信的那一刻，脸上的表情不是疑惑——是恐惧。她认得这封信，认得这笔迹，认得写信的人。但她什么都没说。不是不想说——是不敢说。"
+    },
+    {
+      "id": "marthas_trust",
+      "name": "玛莎的信任",
+      "type": "relation",
+      "description": "玛莎相信你不会出卖她。她准备告诉你一些事——一些她藏了五年的秘密。",
+      "effects": {
+        "npc_attitude": {
+          "tavern_wife": 40
+        },
+        "dialogue_unlock": [
+          "玛莎的午夜之约"
+        ],
+        "dice_bonus": {
+          "charm": 8,
+          "target_npc": "tavern_wife",
+          "reason": "玛莎完全信任你"
+        }
+      },
+      "story": "信任对玛莎来说是一种奢侈品。她活了十五年，没有信任过任何人——包括她的丈夫。但她看着你的眼睛，看到了那个五年前站在酒馆门口的女人的影子。"
+    },
+    {
+      "id": "truth_about_mother",
+      "name": "母亲之死的真相",
+      "type": "knowledge",
+      "description": "你知道了五年前那个夜晚发生了什么。真相像一把刀——你可以用它刺向仇人，也可以把它放下。",
+      "effects": {
+        "dialogue_unlock": [
+          "与老汤姆对质",
+          "选择原谅或复仇"
+        ],
+        "ending_unlock": [
+          "justice",
+          "vengeance",
+          "escape_with_martha"
+        ]
+      },
+      "story": "你的母亲不是死于意外。她找到了玛莎，问了对的问题——然后被老汤姆发现了。矿洞很深，深到一个人掉下去之后，不会有人听到声音。雷格是目击者，但他什么都没做。玛莎也是目击者，但她什么都做不了。这五年来，他们各自用各自的方式腐烂。"
+    },
+    {
+      "id": "blood_on_hands",
+      "name": "染血的双手",
+      "type": "crime",
+      "description": "你手上沾了血。黑木村不会忘记——守卫不会忘记——你自己的良心也不会。",
+      "effects": {
+        "npc_attitude": {
+          "tavern_owner": -60,
+          "tavern_wife": -50,
+          "guard_captain": -40,
+          "hunter": -20
+        },
+        "dice_bonus": {
+          "charm": -10,
+          "target_npc": "all",
+          "reason": "人们害怕你"
+        }
+      },
+      "story": "刀刃入肉的声音比想象中小。但后果比想象中大——大到整个黑木村都开始用不同的眼神看你。"
+    },
+    {
+      "id": "beaten_by_tom",
+      "name": "老汤姆的教训",
+      "type": "crime",
+      "description": "你被老汤姆制服了。他比你想象的更强——也更狠。酒馆里所有人都看到了你倒在地上的样子。",
+      "effects": {
+        "npc_attitude": {
+          "tavern_owner": -50,
+          "tavern_wife": -25,
+          "guard_captain": -15,
+          "hunter": -10
+        },
+        "dice_bonus": {
+          "strength": -5,
+          "reason": "老汤姆知道你打不过他，下次动手会更不留情"
+        }
+      },
+      "story": "老汤姆的膝盖压在你的胸口上，菜刀贴着你的喉咙。酒馆里所有人都看着——没有人出声。你输了。在黑木村，输一次就够了。"
+    },
+    {
+      "id": "hunters_bond",
+      "name": "猎人的情义",
+      "type": "relation",
+      "description": "雷格欠你一个人情。在这个村子里，一个猎人的情义比银币值钱。",
+      "effects": {
+        "npc_attitude": {
+          "hunter": 40
+        },
+        "dialogue_unlock": [
+          "请雷格带路去矿洞深处",
+          "向雷格打听五年前的事"
+        ],
+        "dice_bonus": {
+          "agility": 5,
+          "target_npc": "hunter",
+          "reason": "雷格暗中帮你——比如引开野兽"
+        }
+      },
+      "story": "雷格不是轻易欠人情的人。他这辈子欠过的人——一只手数得过来。你是其中之一。这意味着他可以为你做一件他不愿意做的事。比如，说出一个他藏了五年的真相。"
+    },
+    {
+      "id": "hunters_confession",
+      "name": "猎人的忏悔",
+      "type": "knowledge",
+      "description": "雷格告诉了你五年前他目击的事。他说完之后沉默了很久——五年来第一次有人听他说完。",
+      "effects": {
+        "dialogue_unlock": [
+          "与老汤姆对质"
+        ],
+        "ending_unlock": [
+          "justice",
+          "vengeance"
+        ],
+        "dice_bonus": {
+          "charm": 10,
+          "target_npc": "guard_captain",
+          "reason": "雷格的证词是铁证"
+        }
+      },
+      "story": "\"那个女的……你母亲。她那天下午来的酒馆。我在角落里喝酒。她问了玛莎几个问题——关于戒指的。然后老汤姆从后厨出来，脸色很难看。晚上我看到他把她往矿洞那边带。我以为只是送她出村。第二天听说矿洞里摔死了人。我知道不是意外。我没说——因为老汤姆知道我偷猎的事。我不说，他就不说。\""
+    },
+    {
+      "id": "secret_ledger",
+      "name": "秘密账本",
+      "type": "item",
+      "description": "一本记录了老汤姆黑市交易的账本。每一笔皮货、每一个买家、每一次交货——白纸黑字，铁证如山。",
+      "effects": {
+        "dialogue_unlock": [
+          "向马库斯举报",
+          "威胁老汤姆",
+          "交给玛莎"
+        ],
+        "ending_unlock": [
+          "justice"
+        ],
+        "dice_bonus": {
+          "charm": 15,
+          "target_npc": "guard_captain",
+          "reason": "账本是无可辩驳的证据"
+        }
+      },
+      "story": "账本的纸已经发黄。玛莎的字迹很工整——她是精明的女人，知道有一天这个本子也许能救她的命。或者要她的命。"
+    },
+    {
+      "id": "guard_ally",
+      "name": "守卫的信任",
+      "type": "relation",
+      "description": "马库斯相信你在做正确的事。他把个人感情放在一边，选择了职责——这一次，职责站在你这边。",
+      "effects": {
+        "npc_attitude": {
+          "guard_captain": 50
+        },
+        "dialogue_unlock": [
+          "请求马库斯逮捕老汤姆"
+        ],
+        "ending_unlock": [
+          "justice"
+        ]
+      },
+      "story": "马库斯不是容易被说服的人。但他看到了证据——或者说，他终于允许自己看到了一直以来假装没看到的那些事。酒馆是他的盲点。你帮他把盲点移开了。"
+    },
+    {
+      "id": "mine_discovery",
+      "name": "矿洞的发现",
+      "type": "knowledge",
+      "description": "你在矿洞深处找到了不止偷猎的证据——还有母亲留下的痕迹。",
+      "effects": {
+        "dialogue_unlock": [
+          "追问雷格",
+          "向马库斯报告矿洞发现"
+        ],
+        "dice_bonus": {
+          "intelligence": 8,
+          "reason": "你对矿洞的布局了如指掌"
+        }
+      },
+      "story": "矿洞第三层，一堆旧皮货后面，你找到了一枚耳环。不是银的——是铜的，已经生了绿锈。但你在母亲年轻时的画像上见过这对耳环。她来过这里。她在这里结束。"
+    },
+    {
+      "id": "midnight_pact",
+      "name": "午夜之约",
+      "type": "knowledge",
+      "description": "玛莎约你在酒馆打烊后见面。她决定告诉你一切——不管代价是什么。",
+      "effects": {
+        "dialogue_unlock": [
+          "午夜赴约"
+        ],
+        "ending_unlock": [
+          "escape_with_martha",
+          "vengeance"
+        ]
+      },
+      "story": "\"后门。午夜。别让任何人看见。\"玛莎说完这句话就转身回了厨房。你注意到她的手在发抖——但她的声音很稳。十五年来她第一次决定不再躲。"
+    },
+    {
+      "id": "stolen_goods",
+      "name": "顺手牵羊",
+      "type": "crime",
+      "description": "你从酒馆顺走了一些东西。不值多少钱——但如果被发现，后果比钱严重。",
+      "effects": {
+        "npc_attitude": {
+          "tavern_owner": -20,
+          "tavern_wife": -15
+        },
+        "dice_bonus": {
+          "agility": 3,
+          "reason": "练过手了"
+        }
+      },
+      "story": "不是什么值钱的东西。但黑木村很小——消息传得很快。老汤姆第二天就发现东西少了。他没声张，但他记住了。"
+    },
+    {
+      "id": "caught_stealing",
+      "name": "失手被擒",
+      "type": "crime",
+      "description": "你偷东西时被当场抓获。老汤姆不会善罢甘休——在黑木村，偷窃的代价比你想象的高。",
+      "effects": {
+        "npc_attitude": {
+          "tavern_owner": -40,
+          "tavern_wife": -30,
+          "guard_captain": -20
+        },
+        "dice_bonus": {
+          "agility": -5,
+          "reason": "老汤姆提高了警惕，再想偷可不容易了"
+        }
+      },
+      "story": "玛莎的尖叫划破了酒馆的嘈杂。你还没反应过来，老汤姆的拳头已经到了。在黑木村，小偷的待遇比外乡人更糟——你两样都占了。"
+    },
+    {
+      "id": "marthas_escape",
+      "name": "玛莎的离去",
+      "type": "relation",
+      "description": "玛莎带着账本离开了黑木村。她没有告诉老汤姆——也没有告诉你。",
+      "effects": {
+        "npc_attitude": {
+          "tavern_owner": -30
+        },
+        "dialogue_remove": [
+          "向玛莎打听",
+          "午夜赴约"
+        ],
+        "ending_unlock": [
+          "walk_away_partial"
+        ]
+      },
+      "story": "你早上去酒馆的时候，厨房是空的。地板被撬开了一块——账本不见了。老汤姆在吧台后面砸了一排杯子。你没有问玛莎去了哪里。你知道她不会回来了。"
+    }
+  ],
+  "event_cards": [
+    {
+      "id": "chat_tavern_owner",
+      "priority": 5,
+      "trigger": {
+        "action_type": "social",
+        "target_npc": "tavern_owner"
+      },
+      "require_cards": [],
+      "exclude_cards": [
+        "blood_on_hands"
+      ],
+      "versions": {
+        "warm": {
+          "condition": "has_card:tavern_favor",
+          "outcome": {
+            "narrative_hint": "老汤姆看到是你，咧嘴笑了一下。'又来啦？这次想聊什么？'他擦着杯子，眼神在等你开口。",
+            "npc_reactions": {
+              "tavern_owner": "友善，愿意多聊几句"
+            },
+            "atmosphere": "轻松的闲聊",
+            "npc_attitude": {
+              "tavern_owner": 10
+            }
+          }
+        },
+        "cold": {
+          "condition": "attitude_lt:tavern_owner:-30",
+          "outcome": {
+            "narrative_hint": "老汤姆看见你走过来，手里的杯子慢慢放下了。他没有说话——但他的沉默比任何咆哮都让人不安。",
+            "npc_reactions": {
+              "tavern_owner": "沉默的敌意"
+            },
+            "atmosphere": "紧绷，一触即发",
+            "npc_attitude": {
+              "tavern_owner": -5
+            }
+          }
+        },
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "你和老汤姆随便聊了几句——酒价涨了，村里的生客越来越少了，今年的麦子收成不好所以酒也比往年贵。他说话的时候眼神一直飘——像是在等人的样子。",
+            "npc_reactions": {
+              "tavern_owner": "随意闲聊，略带心不在焉"
+            },
+            "atmosphere": "酒馆里的日常对话",
+            "npc_attitude": {
+              "tavern_owner": 5
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "chat_tavern_wife",
+      "priority": 5,
+      "trigger": {
+        "action_type": "social",
+        "target_npc": "tavern_wife"
+      },
+      "require_cards": [],
+      "exclude_cards": [
+        "blood_on_hands"
+      ],
+      "versions": {
+        "warm": {
+          "condition": "has_card:marthas_trust",
+          "outcome": {
+            "narrative_hint": "玛莎看到你走过来，停下了手里的活。她的眼神不再是躲闪的——而是那种下了决心的人才有的安静。'你想知道什么？'她问。这一次她没有加'别告诉别人'。",
+            "npc_reactions": {
+              "tavern_wife": "信任你，愿意回答你的问题"
+            },
+            "atmosphere": "安静的信任",
+            "npc_attitude": {
+              "tavern_wife": 10
+            }
+          }
+        },
+        "cold": {
+          "condition": "attitude_lt:tavern_wife:-20",
+          "outcome": {
+            "narrative_hint": "玛莎看到你走过来，迅速低下头，手里的抹布在同一个地方反复擦了三遍。她不想和你有任何交流——至少现在不想。",
+            "npc_reactions": {
+              "tavern_wife": "回避，不想交谈"
+            },
+            "atmosphere": "尴尬的沉默",
+            "npc_attitude": {
+              "tavern_wife": -5
+            }
+          }
+        },
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "玛莎抬头看了你一眼，手上揉面的动作没停。'来酒馆的人不是喝酒就是找人——你是哪一种？'她的语气不冷，但也不热。是那种每天都见太多陌生人的语气。",
+            "npc_reactions": {
+              "tavern_wife": "礼貌但保持距离"
+            },
+            "atmosphere": "后厨的日常忙碌",
+            "npc_attitude": {
+              "tavern_wife": 5
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "chat_guard_captain",
+      "priority": 5,
+      "trigger": {
+        "action_type": "social",
+        "target_npc": "guard_captain"
+      },
+      "require_cards": [],
+      "exclude_cards": [
+        "blood_on_hands"
+      ],
+      "versions": {
+        "warm": {
+          "condition": "has_card:guard_ally",
+          "outcome": {
+            "narrative_hint": "马库斯看到你走过来，从井沿上直起身。'有什么新发现？'他的语气不再是审问式的——是同伴之间的询问。",
+            "npc_reactions": {
+              "guard_captain": "信任，把你当同伴看待"
+            },
+            "atmosphere": "两个人在井边的低声交谈",
+            "npc_attitude": {
+              "guard_captain": 8
+            }
+          }
+        },
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "马库斯靠在老井沿上，扫了你一眼。'新来的？'他的语气不冷不热，是守卫队长对每一个陌生人都会用的那种。但他没有赶你走——这就已经是一种态度了。",
+            "npc_reactions": {
+              "guard_captain": "例行公事的审视，但不算不友善"
+            },
+            "atmosphere": "广场上的日常巡逻",
+            "npc_attitude": {
+              "guard_captain": 3
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "chat_hunter",
+      "priority": 5,
+      "trigger": {
+        "action_type": "social",
+        "target_npc": "hunter"
+      },
+      "require_cards": [],
+      "exclude_cards": [
+        "blood_on_hands"
+      ],
+      "versions": {
+        "warm": {
+          "condition": "has_card:hunters_bond",
+          "outcome": {
+            "narrative_hint": "雷格靠在一棵松树上，嘴里的草茎慢慢嚼着。看到你来，他把草茎吐了——这在雷格的语言里，意味着'我准备好了，说吧'。",
+            "npc_reactions": {
+              "hunter": "放松，愿意交谈"
+            },
+            "atmosphere": "松林中的安静对话",
+            "npc_attitude": {
+              "hunter": 8
+            }
+          }
+        },
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "雷格看了你一眼，没有停下手里削箭杆的动作。他的沉默不是敌意——是他和所有人交流的默认方式。你想说话就说，他不会走，也不会凑过来。",
+            "npc_reactions": {
+              "hunter": "沉默但并未拒绝交流"
+            },
+            "atmosphere": "森林边缘，只有削木头的声音",
+            "npc_attitude": {
+              "hunter": 3
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "enter_tavern",
+      "trigger": {
+        "action_type": "movement",
+        "target_location": "tavern"
+      },
+      "require_cards": [],
+      "exclude_cards": [],
+      "versions": {
+        "warm": {
+          "condition": "has_card:tavern_favor",
+          "outcome": {
+            "narrative_hint": "老汤姆看到你推门进来，咧嘴笑了。他从柜台下摸出一个积灰的陶罐——'尝尝这个，去年埋的月光酒，从不给外人喝的。'玛莎在楼梯口一闪而过，看到是你，脚步停了半拍。",
+            "npc_reactions": {
+              "tavern_owner": "热情，主动拿出珍藏的酒",
+              "tavern_wife": "看了你一眼然后继续忙"
+            },
+            "atmosphere": "温暖，酒香弥漫",
+            "available_actions": [
+              "和老汤姆聊聊",
+              "找玛莎说话",
+              "点些吃的",
+              "观察酒馆里的细节"
+            ]
+          }
+        },
+        "cold": {
+          "condition": "has_card:blood_on_hands",
+          "outcome": {
+            "narrative_hint": "门推开的一瞬，酒馆里的谈话声停了三秒。老汤姆的手消失在柜台下面——你知道那里有刀。角落里两个村民匆匆结账走了。空气突然变得很重。",
+            "npc_reactions": {
+              "tavern_owner": "戒备，手握柜台下的刀",
+              "tavern_wife": "躲进了后厨，不敢出来"
+            },
+            "atmosphere": "紧张，压抑，随时可能爆发冲突",
+            "risk": "暴力冲突"
+          }
+        },
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "老汤姆抬头看了你一眼，手里擦杯子的动作没有停。'要什么？'他的语气不冷不热。玛莎在后厨忙活，听到声音探了半张脸出来。",
+            "npc_reactions": {
+              "tavern_owner": "冷淡招呼",
+              "tavern_wife": "好奇地打量新来的陌生人"
+            },
+            "atmosphere": "寻常的午后，酒馆里三三两两的客人",
+            "available_actions": [
+              "点酒",
+              "问路",
+              "向老汤姆打听玛莎",
+              "观察酒馆"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "enter_square",
+      "trigger": {
+        "action_type": "movement",
+        "target_location": "village_square"
+      },
+      "require_cards": [],
+      "exclude_cards": [],
+      "versions": {
+        "warm": {
+          "condition": "has_card:guard_ally",
+          "outcome": {
+            "narrative_hint": "马库斯站在老井旁，看到你走过来，微微点了下头。这不是一个守卫队长对陌生人的招呼——这是一个人对同伴的致意。",
+            "npc_reactions": {
+              "guard_captain": "对你点头致意，手没有放在剑柄上"
+            },
+            "atmosphere": "阳光正好，广场上有孩子在追逐",
+            "available_actions": [
+              "和马库斯聊聊",
+              "观察村民",
+              "去酒馆",
+              "去村长大屋"
+            ]
+          }
+        },
+        "cold": {
+          "condition": "has_card:blood_on_hands",
+          "outcome": {
+            "narrative_hint": "广场上的人看到你走过来，自动让开了一条路。不是尊敬——是恐惧。马库斯的手按在剑柄上，他的眼睛一直跟着你。一个母亲拉走了自己的孩子。",
+            "npc_reactions": {
+              "guard_captain": "高度戒备，随时准备拔剑",
+              "villagers": "躲避你"
+            },
+            "atmosphere": "紧张，广场上的人窃窃私语",
+            "risk": "守卫可能采取行动"
+          }
+        },
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "碎石广场上，一个女人在井边打水，两个老人在树下下棋。马库斯靠在井沿上，扫了你一眼——职业性的审视，然后移开了目光。",
+            "npc_reactions": {
+              "guard_captain": "职业性扫视后忽略你"
+            },
+            "atmosphere": "平静的乡村午后",
+            "available_actions": [
+              "观察周围",
+              "和守卫队长说话",
+              "去酒馆",
+              "去森林",
+              "去矿洞"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "enter_forest",
+      "trigger": {
+        "action_type": "movement",
+        "target_location": "forest"
+      },
+      "require_cards": [],
+      "exclude_cards": [],
+      "versions": {
+        "warm": {
+          "condition": "has_card:hunters_bond",
+          "outcome": {
+            "narrative_hint": "你在松林里走了不到一刻钟，头顶的树枝响了一声。雷格从树上跳下来，落地的声音比猫还轻。'跟我来。'他说——没有寒暄，没有解释。但你知道他不会害你。",
+            "npc_reactions": {
+              "hunter": "从树上跳下，主动带你深入森林"
+            },
+            "atmosphere": "林间光影斑驳，松针的香味混着泥土的潮湿",
+            "available_actions": [
+              "跟雷格走",
+              "问雷格关于森林的秘密",
+              "请雷格带路去矿洞",
+              "搜索森林"
+            ]
+          }
+        },
+        "cold": {
+          "condition": "has_card:blood_on_hands",
+          "outcome": {
+            "narrative_hint": "森林里异常安静。没有鸟叫，没有虫鸣——只有你自己的脚步声。你总觉得背后有东西在看你。也许不是东西——也许是人。雷格的猎刀出鞘很快，你不知道他现在站在哪一边。",
+            "npc_reactions": {
+              "hunter": "在暗处观察你，没有现身"
+            },
+            "atmosphere": "压抑的寂静，每一步都有回声",
+            "risk": "被跟踪或伏击"
+          }
+        },
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "松林很密，阳光被切成了碎片洒在地上。远处有啄木鸟笃笃的声音。一条小径通向深处——小径旁有新鲜的脚印，不是野兽的。空气里除了松香，还有一丝若有若无的……血腥味。",
+            "npc_reactions": {},
+            "atmosphere": "宁静但略带不安，森林深处有未知的东西",
+            "available_actions": [
+              "沿小径深入",
+              "搜索森林地面",
+              "寻找猎人",
+              "去矿洞入口",
+              "返回村口"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "enter_mine",
+      "trigger": {
+        "action_type": "movement",
+        "target_location": "mine"
+      },
+      "require_cards": [],
+      "exclude_cards": [],
+      "versions": {
+        "warm": {
+          "condition": "has_card:mine_discovery",
+          "outcome": {
+            "narrative_hint": "你带着火把再次进入矿洞。这一次你知道往哪里走——第三层，皮货堆后面，那条不显眼的裂缝。上一次你在这里找到了母亲的耳环。这一次，你来找更多的答案。",
+            "npc_reactions": {},
+            "atmosphere": "火光在岩壁上跳跃，矿洞深处有风——说明有另一个出口",
+            "available_actions": [
+              "深入第三层",
+              "搜索遗留物品",
+              "查看皮货藏匿处"
+            ]
+          }
+        },
+        "cold": {
+          "condition": "has_card:blood_on_hands",
+          "outcome": {
+            "narrative_hint": "矿洞里伸手不见五指。火把只能照亮面前三步。每一步都有回声——但不是你的回声。有人的脚步声和你重叠了一瞬，然后停止了。你在矿洞里不是一个人。",
+            "npc_reactions": {},
+            "atmosphere": "黑暗，潮湿，被跟踪的恐惧",
+            "risk": "遭遇伏击"
+          }
+        },
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "矿洞入口被荆棘半掩。你拨开枝条，一股潮湿的冷风从里面涌出来——带着霉味和更深的、说不清的气味。地上有好几种不同的脚印。有人经常来这里——不是一个，是好几个。",
+            "npc_reactions": {},
+            "atmosphere": "阴冷潮湿，洞穴深处有水滴声，隐约的不安",
+            "available_actions": [
+              "点燃火把进入",
+              "观察地上的脚印",
+              "搜索入口附近",
+              "返回森林"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "show_martha_letter",
+      "trigger": {
+        "action_type": "item_use",
+        "target_npc": "tavern_wife",
+        "topic": "旧信"
+      },
+      "require_cards": [
+        "old_letter"
+      ],
+      "exclude_cards": [],
+      "versions": {
+        "warm": {
+          "condition": "has_card:marthas_trust",
+          "outcome": {
+            "narrative_hint": "玛莎接过信，没有再看——她已经看过一次了。她抬起头，眼眶是红的。'你母亲……她来找我的那天下午，穿了一件蓝色的斗篷。她说她找到了一枚戒指，内侧刻着'归途'。她说这枚戒指会带她回家。'玛莎的声音碎在喉咙里。",
+            "npc_reactions": {
+              "tavern_wife": "泣不成声，决定今晚告诉你一切"
+            },
+            "atmosphere": "沉重，悲伤，但信任已经建立",
+            "cards_to_issue": [
+              "midnight_pact"
+            ],
+            "follow_up_hints": [
+              "午夜去酒馆后门赴约"
+            ]
+          }
+        },
+        "cold": {
+          "condition": "attitude_lt:tavern_wife:-20",
+          "outcome": {
+            "narrative_hint": "玛莎扫了一眼信纸，脸色变得煞白——然后变得铁青。'我不知道你在说什么。拿走。'她把信纸推回来，手指在发抖。你看到她迅速扫了一眼通往二楼的楼梯——她在怕的不是你。",
+            "npc_reactions": {
+              "tavern_wife": "恐惧，拒绝承认，担心被丈夫发现"
+            },
+            "atmosphere": "紧张，玛莎不停看楼梯口",
+            "follow_up_hints": [
+              "玛莎在害怕老汤姆——也许可以换个方式接近她"
+            ]
+          }
+        },
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "玛莎接过旧信，看了一眼——然后整个人像被雷劈了一样僵住了。她的嘴唇动了几下，没有发出声音。过了很久，她抬起头看你，眼神完全变了。'这封信……是从哪来的？'她的声音很轻，但有一种藏不住的颤抖。",
+            "npc_reactions": {
+              "tavern_wife": "震惊，情绪剧烈波动，防线出现裂缝"
+            },
+            "atmosphere": "酒馆的声音仿佛突然被抽走了",
+            "cards_to_issue": [
+              "martha_stirred"
+            ],
+            "follow_up_hints": [
+              "继续和玛莎说话",
+              "把戒指给她看",
+              "问她关于母亲的事"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "give_ring_martha",
+      "trigger": {
+        "action_type": "item_use",
+        "target_npc": "tavern_wife",
+        "topic": "戒指"
+      },
+      "require_cards": [
+        "silver_ring"
+      ],
+      "exclude_cards": [],
+      "versions": {
+        "warm": {
+          "condition": "has_card:marthas_trust",
+          "outcome": {
+            "narrative_hint": "玛莎接过戒指，翻到内侧。'归途'——她默念这两个字，眼泪终于掉了下来。'你母亲那天戴着这枚戒指。她和我说，她找这枚戒指找了十年。我以为她夸张。现在它在你手上——她终于找到了。'玛莎把戒指还给你，手在抖。'她没来得及告诉你的事……我来说。'",
+            "npc_reactions": {
+              "tavern_wife": "泣不成声，做出决定——今晚告诉你一切"
+            },
+            "atmosphere": "沉重而温暖的悲伤",
+            "cards_to_issue": [
+              "midnight_pact"
+            ]
+          }
+        },
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "玛莎接过戒指，翻过来看到内侧的刻字。她的手突然攥紧了——紧到指节发白。'这枚戒指……'她抬头看你，像是第一次真正看你的脸。'你长得像她。'她说完这句话就转身回了厨房。但这一次——她没有关门。你在门缝里看到她靠着灶台，无声地哭。过了很久，她擦干眼泪走出来，声音还在抖但眼神已经不一样了：'你有什么想问的——问吧。'",
+            "npc_reactions": {
+              "tavern_wife": "认出戒指，决定信任你"
+            },
+            "atmosphere": "沉重但信任已经建立",
+            "cards_to_issue": [
+              "martha_stirred",
+              "marthas_trust"
+            ],
+            "follow_up_hints": [
+              "问玛莎关于母亲的事",
+              "问玛莎五年前到底发生了什么"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "ask_martha_about_mother",
+      "trigger": {
+        "action_type": "social",
+        "target_npc": "tavern_wife",
+        "topic": "母亲"
+      },
+      "require_cards": [
+        "martha_stirred"
+      ],
+      "exclude_cards": [],
+      "versions": {
+        "warm": {
+          "condition": "has_card:marthas_trust",
+          "outcome": {
+            "narrative_hint": "玛莎看了看空荡荡的酒馆——确认老汤姆不在。'你母亲发现了一些事。关于这间酒馆，关于矿洞……关于我丈夫。她来找我，想让我帮她。在她出事之前——她给我写了一封信，说如果她出了什么事，让我想办法联系你。那封寄给你的信——是我写的。用她的笔迹。我练了五年。'",
+            "npc_reactions": {
+              "tavern_wife": "终于说出真相的一部分"
+            },
+            "atmosphere": "秘密在空气中展开",
+            "cards_to_issue": [
+              "midnight_pact"
+            ],
+            "follow_up_hints": [
+              "午夜去酒馆后门赴约",
+              "问玛莎母亲到底发现了什么"
+            ]
+          }
+        },
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "玛莎摇头。'我不能说。不是不想——是不能。你不知道你在问什么。你不知道老汤姆……'她没有说完。但她的眼睛往楼梯的方向瞥了一眼——那里通向二楼，通向老汤姆的房间。",
+            "npc_reactions": {
+              "tavern_wife": "欲言又止，极度恐惧"
+            },
+            "atmosphere": "恐惧在蔓延",
+            "follow_up_hints": [
+              "玛莎害怕老汤姆——为什么？",
+              "也许可以帮玛莎消除她的恐惧"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "talk_tom_about_martha",
+      "trigger": {
+        "action_type": "social",
+        "target_npc": "tavern_owner",
+        "topic": "玛莎"
+      },
+      "require_cards": [],
+      "exclude_cards": [],
+      "versions": {
+        "warm": {
+          "condition": "has_card:tavern_favor",
+          "outcome": {
+            "narrative_hint": "老汤姆压低声音：'找玛莎？她在后厨。'他顿了一下，凑近些，酒气喷在你脸上，'不过跟你说——别跟她提戒指的事。她看到戒指就容易激动。以前有个客人拿戒指逗她，被她用盘子砸了出去。'他哈哈大笑，但眼睛没笑。",
+            "npc_reactions": {
+              "tavern_owner": "表面热情，暗中试探"
+            },
+            "atmosphere": "表面轻松，暗藏警惕",
+            "follow_up_hints": [
+              "老汤姆似乎对'戒指'很敏感——为什么？"
+            ],
+            "npc_attitude": {
+              "tavern_owner": 8
+            }
+          }
+        },
+        "cold": {
+          "condition": "has_card:blood_on_hands",
+          "outcome": {
+            "narrative_hint": "老汤姆的笑容消失了。'你最好离我老婆远一点。'他的声音不大，但吧台后面传来金属碰撞的声音——刀。很轻，但你没听错。",
+            "npc_reactions": {
+              "tavern_owner": "敌意，威胁"
+            },
+            "atmosphere": "火药味",
+            "risk": "冲突一触即发",
+            "npc_attitude": {
+              "tavern_owner": -5
+            }
+          }
+        },
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "'玛莎？'老汤姆擦杯子的手停了一下。'她在厨房忙。你找她有事？'他的语气很随意——但你没漏掉他手指收紧的那一下。",
+            "npc_reactions": {
+              "tavern_owner": "表面随意，暗中警觉"
+            },
+            "atmosphere": "普通的酒馆对话，但有一瞬间的暗流",
+            "follow_up_hints": [
+              "老汤姆似乎不太喜欢别人找玛莎"
+            ],
+            "npc_attitude": {
+              "tavern_owner": 3
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "talk_tom_about_ring",
+      "trigger": {
+        "action_type": "social",
+        "target_npc": "tavern_owner",
+        "topic": "戒指"
+      },
+      "require_cards": [],
+      "exclude_cards": [],
+      "versions": {
+        "warm": {
+          "condition": "has_card:tavern_favor",
+          "outcome": {
+            "narrative_hint": "你提到戒指，老汤姆的笑脸僵了一瞬——快得几乎看不出来。然后他恢复了笑容，甚至更灿烂了。'银戒指？好东西啊。哪来的——家里的？'他问得很随意，但擦杯子的手慢了半拍。",
+            "npc_reactions": {
+              "tavern_owner": "表面好奇，内心警觉"
+            },
+            "atmosphere": "老汤姆的笑容有点太亮了",
+            "follow_up_hints": [
+              "老汤姆对戒指有反应——他知道什么？"
+            ],
+            "npc_attitude": {
+              "tavern_owner": 8
+            }
+          }
+        },
+        "cold": {
+          "condition": "attitude_lt:tavern_owner:-30",
+          "outcome": {
+            "narrative_hint": "老汤姆盯着你手上那枚戒指看了很久。酒杯在他手里停住了。'……出去。'他的声音变了——不再是酒馆老板招呼客人的语气，而是另一个人。一个更危险的人。",
+            "npc_reactions": {
+              "tavern_owner": "认出戒指，直接驱逐"
+            },
+            "atmosphere": "突然的冰冷敌意",
+            "risk": "如果不离开可能爆发冲突",
+            "npc_attitude": {
+              "tavern_owner": -5
+            }
+          }
+        },
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "老汤姆的目光在戒指上多停了一秒。不多，就一秒。'戒指？我对首饰没研究。'他耸耸肩，转身去拿架子上的酒瓶。但他拿酒瓶的手——你看到了——指节是白的。",
+            "npc_reactions": {
+              "tavern_owner": "假装不感兴趣，但不经意间暴露了紧张"
+            },
+            "atmosphere": "普通的对话，暗流涌动",
+            "follow_up_hints": [
+              "老汤姆认识这枚戒指。他为什么假装不认识？"
+            ],
+            "npc_attitude": {
+              "tavern_owner": 3
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "help_tavern_owner",
+      "trigger": {
+        "action_type": "social",
+        "target_npc": "tavern_owner",
+        "topic": "帮助"
+      },
+      "require_cards": [],
+      "exclude_cards": [
+        "tavern_favor",
+        "blood_on_hands"
+      ],
+      "versions": {
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "酒桶的裂缝不大，但麦酒正从里面淌出来——老汤姆手忙脚乱地找东西堵。你蹲下来，用麻绳和松脂把裂缝扎紧了。老汤姆愣了一下，然后嗓门大了起来：'好小子！这顿饭算我的！'他用力拍了你一巴掌，差点把你拍了个趔趄。",
+            "npc_reactions": {
+              "tavern_owner": "大喜过望，请你喝酒"
+            },
+            "atmosphere": "热烈、欢快",
+            "cards_to_issue": [
+              "tavern_favor"
+            ],
+            "follow_up_hints": [
+              "老汤姆欠你一个人情——也许可以趁机打听些什么"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "help_hunter",
+      "trigger": {
+        "action_type": "social",
+        "target_npc": "hunter",
+        "topic": "帮助"
+      },
+      "require_cards": [],
+      "exclude_cards": [
+        "hunters_bond",
+        "blood_on_hands"
+      ],
+      "versions": {
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "雷格在森林边缘试图把一个捕兽夹从自己腿上卸下来——夹子锈住了，他的手在流血。你帮他把夹子撬开时，他从头到尾没吭一声。完事之后他看了你一眼，从怀里掏出一块熏肉干递给你。'欠你一个。'他说。就三个字——但雷格的三个字比大多数人的誓言都重。",
+            "npc_reactions": {
+              "hunter": "虽然话少，但认了你这个人"
+            },
+            "atmosphere": "森林边缘，灰色天空下，两个沉默的男人",
+            "cards_to_issue": [
+              "hunters_bond"
+            ],
+            "follow_up_hints": [
+              "雷格欠你一个人情",
+              "也许可以问雷格关于森林的事"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "talk_hunter_about_past",
+      "trigger": {
+        "action_type": "social",
+        "target_npc": "hunter",
+        "topic": "五年前"
+      },
+      "require_cards": [
+        "hunters_bond"
+      ],
+      "exclude_cards": [],
+      "versions": {
+        "warm": {
+          "condition": "has_card:hunters_bond",
+          "outcome": {
+            "narrative_hint": "雷格很久没说话。久到你以为他不会开口了。然后他蹲下来，用树枝在地上画了一个圈——矿洞的形状。'五年前。一个女人。蓝色的斗篷。你长得像她。'他抬头看你的眼神像在看一个鬼魂。'老汤姆推的。我在场。我没拦。'他把树枝掰断了。'我欠你一个——够不够还这个？'",
+            "npc_reactions": {
+              "hunter": "极度痛苦地坦白"
+            },
+            "atmosphere": "沉重，沉默的森林里只有风声",
+            "cards_to_issue": [
+              "hunters_confession"
+            ],
+            "follow_up_hints": [
+              "雷格的证词可以让马库斯行动",
+              "去矿洞找更多证据"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "talk_marcus_investigate",
+      "trigger": {
+        "action_type": "social",
+        "target_npc": "guard_captain",
+        "topic": "调查"
+      },
+      "require_cards": [],
+      "exclude_cards": [],
+      "versions": {
+        "warm": {
+          "condition": "has_card:guard_ally",
+          "outcome": {
+            "narrative_hint": "马库斯听你说完，沉默了很久。'五年前……有个外来女人在矿洞遇难。报告写的是意外。'他看着你的眼睛，'我一直觉得那报告太干净了。太干净的报告——通常是被擦过的。'他的手离开了剑柄。'你有证据吗？没有的话——'他没说完，但你听懂了。有证据他就能动。",
+            "npc_reactions": {
+              "guard_captain": "认真对待你的话，暗示需要证据才能行动"
+            },
+            "atmosphere": "严肃而克制的对话",
+            "follow_up_hints": [
+              "需要找到证据——矿洞、账本、或雷格的证词"
+            ],
+            "npc_attitude": {
+              "guard_captain": 8
+            }
+          }
+        },
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "马库斯皱了皱眉。'五年前的案子？那时候我还没调来黑木村。但我可以查。'他顿了顿，审视你的目光更加锐利。'不过——你最好有充分的理由让我去翻旧账。村民不喜欢守卫多管闲事。'",
+            "npc_reactions": {
+              "guard_captain": "谨慎但愿意帮忙，需要更多信息"
+            },
+            "atmosphere": "正式而克制的对话",
+            "follow_up_hints": [
+              "给马库斯提供更多线索",
+              "找到证据再来找他"
+            ],
+            "npc_attitude": {
+              "guard_captain": 3
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "steal_tavern",
+      "trigger": {
+        "action_type": "item_steal",
+        "target_location": "tavern"
+      },
+      "require_cards": [],
+      "exclude_cards": [],
+      "versions": {
+        "warm": {
+          "condition": "has_card:tavern_favor",
+          "outcome": {
+            "narrative_hint": "老汤姆对你没有戒心——他正在和另一个客人吹牛，唾沫横飞。你趁他不注意溜进了后厨。玛莎不在。地板上有一块松动——下面有东西。一本皮面账本。",
+            "npc_reactions": {},
+            "atmosphere": "紧张，心跳加速",
+            "dice_roll": {
+              "attribute": "agility",
+              "difficulty": 5,
+              "success_outcome": {
+                "narrative_hint": "你拿起账本翻了几页——黑市交易的记录，每一笔都清清楚楚。你把账本塞进怀里，悄悄回到吧台前。老汤姆还在吹牛，什么都没发现。",
+                "cards_to_issue": [
+                  "secret_ledger"
+                ]
+              },
+              "failure_outcome": {
+                "narrative_hint": "你拿起账本时碰翻了一摞盘子。老汤姆的吹牛声戛然而止。他冲进后厨，看到你手里的账本——脸色在一瞬间从红变白。'你他妈的在干什么？！'",
+                "cards_to_issue": [
+                  "caught_stealing"
+                ],
+                "npc_attitude": {
+                  "tavern_owner": -30,
+                  "tavern_wife": -20
+                },
+                "follow_up_hints": [
+                  "逃跑",
+                  "向老汤姆求饶",
+                  "试图解释"
+                ]
+              }
+            }
+          }
+        },
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "你趁酒馆人多的时候往后厨摸去。玛莎在灶台前忙活——你需要从她背后溜过去，摸到厨房尽头那扇通向地窖的门。",
+            "npc_reactions": {},
+            "atmosphere": "紧张刺激的潜行",
+            "dice_roll": {
+              "attribute": "agility",
+              "difficulty": -5,
+              "success_outcome": {
+                "narrative_hint": "你成功溜进了地窖。酒桶后面堆着不是酒的东西——皮货，几十张，捆得整整齐齐。角落的木箱里还有一本账本。你拿走了它。",
+                "cards_to_issue": [
+                  "secret_ledger"
+                ]
+              },
+              "failure_outcome": {
+                "narrative_hint": "玛莎一转身，正撞上你。她愣了一秒，然后尖叫了。老汤姆冲进来的速度比他端酒的速度快得多。'小偷！'他的拳头砸过来之前，你只有一秒钟——跑，还是打？",
+                "cards_to_issue": [
+                  "caught_stealing"
+                ],
+                "npc_attitude": {
+                  "tavern_owner": -30,
+                  "tavern_wife": -20
+                },
+                "follow_up_hints": [
+                  "逃跑",
+                  "向老汤姆求饶",
+                  "试图解释"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "attack_in_tavern",
+      "trigger": {
+        "action_type": "violence",
+        "target_npc": "tavern_owner"
+      },
+      "require_cards": [],
+      "exclude_cards": [],
+      "versions": {
+        "cold": {
+          "condition": "has_card:truth_about_mother",
+          "outcome": {
+            "narrative_hint": "你知道了一切。老汤姆站在吧台后面——还在擦他的杯子——好像什么都不曾发生过。他的手在看到你眼神的瞬间移向柜台下方。他很快——但你更快。",
+            "npc_reactions": {
+              "tavern_owner": "意识到你来复仇了，拔刀",
+              "tavern_wife": "尖叫着躲到桌子后面"
+            },
+            "atmosphere": "暴烈的复仇",
+            "dice_roll": {
+              "attribute": "strength",
+              "difficulty": 0,
+              "success_outcome": {
+                "narrative_hint": "刀刃入肉。老汤姆倒下去的时候，砸翻了一排陶罐。麦酒混着血从柜台边缘滴下来。玛莎没有尖叫——她只是看着，手指攥着围裙，指节发白。一切安静了。",
+                "cards_to_issue": [
+                  "blood_on_hands"
+                ],
+                "npc_alive_changes": {
+                  "tavern_owner": false
+                }
+              },
+              "failure_outcome": {
+                "narrative_hint": "老汤姆的刀比你想的快。一阵剧痛从肋下传来——你踉跄后退，血从指缝间渗出来。老汤姆举着刀，喘着粗气。'你跟她一样——不该来的。'玛莎尖叫着冲出了酒馆。",
+                "npc_attitude": {
+                  "tavern_owner": -50,
+                  "tavern_wife": -30
+                },
+                "follow_up_hints": [
+                  "试图逃跑",
+                  "向玛莎求救"
+                ]
+              }
+            }
+          }
+        },
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "你向老汤姆冲过去。酒馆里的客人四散奔逃——椅子翻了，酒杯碎了。老汤姆从柜台下面摸出了菜刀——他显然不是第一次应付这种事。",
+            "npc_reactions": {
+              "tavern_owner": "举刀迎战",
+              "tavern_wife": "极度恐惧，躲藏",
+              "other_patrons": "四散逃离"
+            },
+            "atmosphere": "混乱、暴烈的冲突",
+            "dice_roll": {
+              "attribute": "strength",
+              "difficulty": -5,
+              "success_outcome": {
+                "narrative_hint": "你制服了老汤姆。他倒在地板上，刀滑到了一边。玛莎站在角落里，捂着嘴，眼泪无声地流。酒馆的门被撞开了——马库斯站在门口，剑已出鞘。",
+                "cards_to_issue": [
+                  "blood_on_hands"
+                ],
+                "follow_up_hints": [
+                  "守卫来了——解释还是逃跑？"
+                ]
+              },
+              "failure_outcome": {
+                "narrative_hint": "老汤姆力气比你想象的大。他把你撞翻在地，菜刀架在你脖子上。'在我的地盘动我？'他的酒气喷在脸上，但眼睛是清醒的——清醒而残酷。玛莎的声音从很远的地方传来：'别杀他！求你了……'",
+                "cards_to_issue": [
+                  "beaten_by_tom"
+                ],
+                "npc_attitude": {
+                  "tavern_owner": -40,
+                  "tavern_wife": -20
+                },
+                "follow_up_hints": [
+                  "向玛莎求救",
+                  "求老汤姆放过自己"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "attack_hunter",
+      "trigger": {
+        "action_type": "violence",
+        "target_npc": "hunter"
+      },
+      "require_cards": [],
+      "exclude_cards": [],
+      "versions": {
+        "warm": {
+          "condition": "has_card:hunters_bond",
+          "outcome": {
+            "narrative_hint": "雷格看着你举起的武器，没有躲。他的眼神不是恐惧——是失望。'我以为你不一样。'你握着武器的手在发抖——他是这个村子里唯一信任过你的人。",
+            "npc_reactions": {
+              "hunter": "不躲不闪，极度失望"
+            },
+            "atmosphere": "背叛的沉重",
+            "cards_to_issue": [
+              "blood_on_hands"
+            ],
+            "npc_attitude": {
+              "hunter": -100
+            }
+          }
+        },
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "雷格比你快——他的猎刀像蛇一样从腰间弹出来。'想清楚。'他说的不是威胁——是警告。雷格的警告通常只给一次。",
+            "npc_reactions": {
+              "hunter": "拔刀防御，给你最后一次机会"
+            },
+            "atmosphere": "紧绷的对峙",
+            "dice_roll": {
+              "attribute": "strength",
+              "difficulty": -8,
+              "success_outcome": {
+                "narrative_hint": "你击倒了猎人。他倒在松针上，猎刀摔在一旁。他喘着气看你，眼神里没有愤怒——只有一种深沉的悲哀。",
+                "cards_to_issue": [
+                  "blood_on_hands"
+                ]
+              },
+              "failure_outcome": {
+                "narrative_hint": "雷格太快了。猎刀的刀背砸在你手腕上——武器飞出去，插在树干上。雷格站在你面前，猎刀的刀刃那面还对着他自己。'最后一次。'他说。然后转身消失在了森林里。",
+                "npc_attitude": {
+                  "hunter": -50
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "search_forest",
+      "trigger": {
+        "action_type": "exploration",
+        "target_location": "forest"
+      },
+      "require_cards": [],
+      "exclude_cards": [],
+      "versions": {
+        "warm": {
+          "condition": "has_card:hunters_bond",
+          "outcome": {
+            "narrative_hint": "雷格带你穿过密林——他走的路没有路，但他的脚记得每一棵树、每一块石头。最后他在一处被藤蔓遮住的洞口前停下来。'矿洞的后门。只有我知道。'他看着你，'里面有你想要的东西——但你想好了。进去了，就不能当没看见。'",
+            "npc_reactions": {
+              "hunter": "带你到矿洞秘密入口"
+            },
+            "atmosphere": "发现秘密的紧张感",
+            "cards_to_issue": [
+              "mine_discovery"
+            ],
+            "follow_up_hints": [
+              "进入矿洞"
+            ]
+          }
+        },
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "你在森林里仔细搜索。松针下面有一些不自然的东西——捕兽夹的铁链、撕破的麻布、还有断在土里的烟斗。一条隐约的小径通向密林更深处，地上的脚印很新。",
+            "npc_reactions": {},
+            "atmosphere": "探索的专注，逐渐接近某个秘密",
+            "dice_roll": {
+              "attribute": "intelligence",
+              "difficulty": -3,
+              "success_outcome": {
+                "narrative_hint": "你在小径尽头发现了一个被荆棘遮掩的洞口——不是矿洞的正门，是另一个入口。洞口旁有烧过篝火的痕迹。有人经常来这里。",
+                "follow_up_hints": [
+                  "进入这个秘密洞口"
+                ]
+              },
+              "failure_outcome": {
+                "narrative_hint": "你在森林里转了一圈，找到了一些奇怪的东西——但似乎都是猎人的日常痕迹。天快黑了，森林里的阴影越来越深。"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "midnight_meeting_event",
+      "priority": 10,
+      "trigger": {
+        "action_type": "movement",
+        "topic": "午夜赴约"
+      },
+      "require_cards": [
+        "midnight_pact"
+      ],
+      "exclude_cards": [],
+      "versions": {
+        "warm": {
+          "condition": "has_card:midnight_pact AND time_range:21-6",
+          "outcome": {
+            "narrative_hint": "午夜。酒馆的后门虚掩着。玛莎披着一件旧斗篷，手里提着一盏油灯。她的脸在灯光里显得又年轻又苍老。'跟我来。'她带你绕过酒馆，穿过广场——月光很亮，照得碎石地面像撒了盐。最后她在老井边停下来。'这里没人听得到。'\n\n她告诉你一切。五年前，你母亲拿着戒指来到黑木村——戒指是她在矿洞附近捡到的。她来找玛莎问戒指的来历。老汤姆知道了——他以为你母亲是来查黑市交易的探子。那天晚上，他把人带到矿洞……剩下的，玛莎说，你不需要听。\n\n'那封旧信是我寄的。我用了五年才鼓起勇气。'油灯晃了一下。'现在你知道了。你要怎么做？'",
+            "npc_reactions": {
+              "tavern_wife": "说出埋藏五年的全部真相"
+            },
+            "atmosphere": "深夜的井边，月光清冷，真相的重量压在两个人之间",
+            "cards_to_issue": [
+              "truth_about_mother"
+            ],
+            "follow_up_hints": [
+              "选择复仇",
+              "选择原谅",
+              "选择让马库斯来处理",
+              "选择带玛莎离开"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "talk_marcus_arrest",
+      "trigger": {
+        "action_type": "social",
+        "target_npc": "guard_captain",
+        "topic": "逮捕"
+      },
+      "require_cards": [
+        "guard_ally"
+      ],
+      "exclude_cards": [],
+      "versions": {
+        "warm": {
+          "condition": "has_card:secret_ledger",
+          "outcome": {
+            "narrative_hint": "马库斯翻完账本的最后一页，合上了本子。他的表情不是愤怒——是那种终于看到真相的沉重。'我查了五年。每次查到酒馆门口就停了。你知道为什么吗——因为老汤姆请我喝酒。我以为那是友情。其实是封口。'\n\n他站起身，系紧了剑带。'在这里等我。'走到门口，他停了一下。'谢谢你——让我有理由做我早就该做的事。'",
+            "npc_reactions": {
+              "guard_captain": "决定逮捕老汤姆"
+            },
+            "atmosphere": "正义终于得到伸张的凝重时刻",
+            "triggers_ending": "justice",
+            "npc_attitude": {
+              "guard_captain": 10
+            }
+          }
+        },
+        "warm_alt": {
+          "condition": "has_card:hunters_confession",
+          "outcome": {
+            "narrative_hint": "马库斯听完你的话，沉默了很久。然后他站起来，没有穿铠甲——只带了剑。'我以守卫队长的身份——不。以一个人的身份。带我去找他。'",
+            "npc_reactions": {
+              "guard_captain": "以个人身份与你并肩行动"
+            },
+            "atmosphere": "沉默而坚定的正义",
+            "triggers_ending": "justice",
+            "npc_attitude": {
+              "guard_captain": 5
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "confront_tom",
+      "trigger": {
+        "action_type": "social",
+        "target_npc": "tavern_owner",
+        "topic": "对质"
+      },
+      "require_cards": [
+        "truth_about_mother"
+      ],
+      "exclude_cards": [],
+      "versions": {
+        "warm": {
+          "condition": "has_card:guard_ally",
+          "outcome": {
+            "narrative_hint": "马库斯站在你身边。老汤姆抬头看到你们两个人一起进来——先看到你，然后看到马库斯脸上的表情。他慢慢放下了手里的杯子。'马库斯。十五年的酒友。你带着剑来的。'他的声音很平静——一个知道自己无路可退的人的平静。",
+            "npc_reactions": {
+              "tavern_owner": "意识到穷途末路",
+              "guard_captain": "沉默但坚定"
+            },
+            "atmosphere": "审判的时刻",
+            "triggers_ending": "justice"
+          }
+        },
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "你站在老汤姆面前，把你知道的一切说出来了。每说一句，他的脸色就变一分——从红润到苍白，从苍白到铁青。酒馆里的客人都走了。只剩下你和老汤姆，还有吧台上那把他还没来得及拿的刀。'你有什么证据？'他说——但声音已经不是刚才那个酒馆老板的声音了。",
+            "npc_reactions": {
+              "tavern_owner": "否认一切，但明显被击中了"
+            },
+            "atmosphere": "正面对质，剑拔弩张",
+            "dice_roll": {
+              "attribute": "charm",
+              "difficulty": -8,
+              "success_outcome": {
+                "narrative_hint": "你的话一句一句打在他身上。最后他坐下了——不是被打倒的，是被真相的重量压下去的。'你想怎么样？'他问。这是你第一次从老汤姆脸上看到恐惧。",
+                "follow_up_hints": [
+                  "选择复仇",
+                  "选择让马库斯来处理"
+                ]
+              },
+              "failure_outcome": {
+                "narrative_hint": "老汤姆猛地站起来，椅子砸在墙上。'你说够了吧！'他浑身发抖——不是恐惧，是暴怒。他的手伸向柜台下方。这次你没有犹豫。"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "search_tavern",
+      "priority": 1,
+      "trigger": {
+        "action_type": "exploration",
+        "target_location": "tavern"
+      },
+      "require_cards": [],
+      "exclude_cards": [],
+      "versions": {
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "你仔细打量酒馆的每个角落。吧台下面的木板上刻着不少名字——大多是醉汉的手笔。后厨门缝下透出一线光，地板在你脚下吱呀作响。地窖的门虚掩着——老汤姆说下面只有酒桶。但你闻到一股不属于酒的味道。动物皮毛的腥味，混着某种说不上来的霉。",
+            "atmosphere": "安静中潜伏着秘密",
+            "follow_up_hints": [
+              "进入地窖看看",
+              "向老汤姆打听地窖",
+              "问问玛莎后厨的事"
+            ],
+            "dice_roll": {
+              "attribute": "intelligence",
+              "difficulty": -2,
+              "success_outcome": {
+                "narrative_hint": "你仔细打量酒馆的每个角落。吧台下面的木板上刻着不少名字——大多是醉汉的手笔。后厨门缝下透出一线光，地板在你脚下吱呀作响。地窖的门虚掩着——老汤姆说下面只有酒桶。但你闻到一股不属于酒的味道。动物皮毛的腥味，混着某种说不上来的霉。\n\n你趁老汤姆不注意，蹲下来看了看地窖门缝。没错——那不是酒的味道。是兽皮，经过简单鞣制的兽皮。黑市交易的痕迹。",
+                "follow_up_hints": [
+                  "进入地窖看看",
+                  "向马库斯举报黑市交易",
+                  "用这个情报威胁老汤姆"
+                ]
+              },
+              "failure_outcome": {
+                "narrative_hint": "老汤姆似乎感觉到了什么。他突然从吧台后面转过来，眼神锐利。你若无其事地移开视线，端起酒杯——但这杯麦酒突然尝起来有点苦。",
+                "follow_up_hints": [
+                  "等老汤姆放松警惕再来"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "search_square",
+      "priority": 1,
+      "trigger": {
+        "action_type": "exploration",
+        "target_location": "village_square"
+      },
+      "require_cards": [],
+      "exclude_cards": [],
+      "versions": {
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "你绕着村口广场走了一圈。老井边的石沿被磨得光滑——不知多少人在这里打过水、聊过天。告示牌上贴着一张泛黄的寻人启事：五年前失踪的女人，蓝色斗篷，左手戴银戒指。你的手不自觉地攥紧了口袋里的戒指。马库斯在广场另一头巡逻，他注意到了你在看告示牌。",
+            "atmosphere": "阳光下的寻常村落，但告示牌像一根刺",
+            "npc_reactions": {
+              "guard_captain": "注意到你在看告示牌，若有所思"
+            },
+            "follow_up_hints": [
+              "和马库斯聊聊告示牌的事",
+              "去矿洞寻找线索"
+            ],
+            "dice_roll": {
+              "attribute": "intelligence",
+              "difficulty": 0,
+              "success_outcome": {
+                "narrative_hint": "你绕着村口广场走了一圈。老井边的石沿被磨得光滑——不知多少人在这里打过水、聊过天。告示牌上贴着一张泛黄的寻人启事：五年前失踪的女人，蓝色斗篷，左手戴银戒指。你的手不自觉地攥紧了口袋里的戒指。马库斯在广场另一头巡逻，他注意到了你在看告示牌。\n\n你凑近告示牌。失踪的女人——蓝色斗篷，左手银戒指。五年前。你低头看了看自己手上的戒指。手指冰凉。那个人是母亲。马库斯还在看着你——他知道你在看什么。",
+                "follow_up_hints": [
+                  "和马库斯谈谈这个案子",
+                  "去矿洞寻找母亲的踪迹"
+                ]
+              },
+              "failure_outcome": {
+                "narrative_hint": "告示牌上的字迹已经模糊了。你隐约看到几个字——失踪、银戒指——但更多细节被雨水冲刷得难以辨认。也许守卫队长知道更多，毕竟这张告示是他贴的。",
+                "follow_up_hints": [
+                  "找马库斯问问寻人启事的事"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "search_mine",
+      "priority": 1,
+      "trigger": {
+        "action_type": "exploration",
+        "target_location": "mine"
+      },
+      "require_cards": [],
+      "exclude_cards": [],
+      "versions": {
+        "warm": {
+          "condition": "has_card:truth_about_mother",
+          "outcome": {
+            "narrative_hint": "你再次来到矿洞深处——这次你知道自己在找什么。在她坠落的那个深坑旁边，石壁上有一道划痕。不是隨意的——是有方向的。你顺着划痕走，在缝隙里找到了一个被油布包裹的小东西。母亲留下的。她在坠下去之前，把最重要的东西藏在了这里。",
+            "atmosphere": "沉重但完整的悲伤",
+            "cards_to_issue": [
+              "mine_discovery"
+            ],
+            "npc_attitude": {}
+          }
+        },
+        "neutral": {
+          "condition": "default",
+          "outcome": {
+            "narrative_hint": "矿洞深处又冷又湿，滴水声从不知名的深处传来。地上有脚印——不止一个人的，也不止一天的。最深处的竖井旁边，石壁上有一道旧的划痕，像是有人用戒指刻的。你蹲下来仔细看——刻的是两个字。太模糊了，认不出来。但你手指上的银戒指突然变得很凉。",
+            "atmosphere": "幽闭、潮湿、深不见底的黑暗",
+            "follow_up_hints": [
+              "回去找玛莎问矿洞的事",
+              "问问雷格矿洞里发生过什么",
+              "继续深入探索"
+            ],
+            "dice_roll": {
+              "attribute": "intelligence",
+              "difficulty": -5,
+              "success_outcome": {
+                "narrative_hint": "你在竖井边缘蹲下来。划痕——不是随意的，是用金属刻的。宽度和你的银戒指一模一样。有人在坠下去之前，拼命想留下什么信息。但划痕太模糊了，只能看清一个像是「归」字的轮廓。你需要更多线索。",
+                "follow_up_hints": [
+                  "回去问玛莎戒指的事",
+                  "找雷格问他矿洞里看到了什么"
+                ]
+              },
+              "failure_outcome": {
+                "narrative_hint": "矿洞深处太暗了。你摸索着走了几十步，脚下的碎石滑了一下——差点摔倒。滴水声从四面八方的黑暗中传来，让人分不清方向。也许应该带一盏灯再来，或者找知道矿洞的人——比如雷格——一起下来。",
+                "follow_up_hints": [
+                  "找雷格带路",
+                  "带火把再来"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "endings": [
+    {
+      "id": "justice",
+      "name": "正义的重量",
+      "condition": "has_card:truth_about_mother AND (has_card:guard_ally OR has_card:secret_ledger OR has_card:hunters_confession) AND not_has_card:blood_on_hands",
+      "narrative_hint": "老汤姆被马库斯押出了酒馆。全村的人都站在广场上——他们第一次看到守卫队长押着自己的酒友。玛莎站在人群边缘，手里攥着围裙。你从她身边走过时，她轻轻碰了碰你的袖子。'谢谢。'她说——很轻，但很真。你的母亲可以安息了。你没有用刀——你用比刀更重的东西。真相。",
+      "epilogue": "马库斯升迁去了城里。玛莎把酒馆改成了旅店——正气多了，她说。雷格还清了债务，不再偷猎。你去母亲墓前放了一束松枝——黑木村的松枝。她在那里度过了最后一个下午。现在她可以回家了。"
+    },
+    {
+      "id": "vengeance",
+      "name": "血债血偿",
+      "condition": "has_card:truth_about_mother AND has_card:blood_on_hands",
+      "narrative_hint": "你的手还在抖。地上是碎掉的酒杯和别的、更暗的东西。老汤姆的眼睛还睁着。外面有人在喊——马库斯的声音，越来越近。你从后门溜出去的时候，和玛莎对上了目光。她没有尖叫——只是看着你，眼神不是恐惧，是一种深沉的悲哀。你替母亲讨回了血债。但代价是什么——你还不确定。",
+      "epilogue": "黑木村从此多了一个影子和一个传说。有人说森林里住着一个杀过人的旅人，每到月圆之夜，矿洞方向就会传来哭声。那个旅人和猎人偶尔会在森林深处碰到——他们从不说话，但每次碰面，猎人都不会举刀。正义和复仇是不同的东西。你选择了其中一个。代价是另一个。"
+    },
+    {
+      "id": "escape_with_martha",
+      "name": "归途",
+      "condition": "has_card:truth_about_mother AND has_card:marthas_trust AND not_has_card:blood_on_hands AND not_has_card:guard_ally",
+      "narrative_hint": "天还没亮。你和玛莎走在出村的路上——她没有回头。你不能回头。酒馆的烟囱还在身后冒着烟——这是你最后一次看见它了。玛莎把手里的皮面账本扔进了老井里。'我不需要它了。'她说。她的声音很轻，但很稳。这是十五年来她第一次觉得安全。",
+      "epilogue": "玛莎去了另一个镇子，开了一家新旅馆——账目清清楚楚的那种。你偶尔会去看她，每次去她都会给你留一壶月光酒。戒指还在你手上，内侧的'归途'两个字被磨得更亮了。你终于理解了这两个字的意思。不是回家——是有地方可回。"
+    },
+    {
+      "id": "walk_away",
+      "name": "未竟的谜",
+      "condition": "not_has_card:truth_about_mother",
+      "narrative_hint": "你站在村口——和来时一样的位置。风从北面森林吹过来，还是那股说不清的甜腻气味。你攥紧了手里的旧信，然后松开了。有些答案不值得用命去换。有些谜底就让它留在那里——留在矿洞深处，留在酒馆紧闭的后厨，留在某个午夜没有说出口的话里。你转身，走出黑木村。旧信在你口袋里——你将永远不知道是谁寄的。",
+      "epilogue": "黑木村还是那个黑木村。老汤姆在酒馆里擦杯子，玛莎在厨房里管账，雷格在森林里躲债，马库斯在广场上巡逻。一切如常。没有人知道一个叫林隙的旅人来过——没有人知道他差点撕开这个村庄最底层的伤疤。你带走了旧信，留下了母亲未竟的故事。也许这样最好。"
+    },
+    {
+      "id": "lost_in_darkness",
+      "name": "黑暗中的影子",
+      "condition": "has_card:blood_on_hands",
+      "narrative_hint": "你记不清自己杀了多少人。酒馆的地板被泡在暗红色的液体里。老汤姆死了。然后是一个试图拦你的守卫——你想不起他的名字了，但他倒下的时候，他的剑还握在手里。森林变成了你的避难所。矿洞变成了你的巢穴。你和黑木村的影子合为一体——人们开始用你的名字吓唬不听话的孩子。你变成了你母亲来到黑木村想要寻找的——一个在矿山深处的鬼魂。",
+      "epilogue": "没有人知道你是怎么死的。有人说你掉进了矿洞深处——和你母亲摔在同一个地方。有人说你还在森林里，每个夜晚在每个路口出现又消失。雷格不再进那片林子。玛莎在酒馆的后门挂了一盏长明灯。不是怕你回来——是怕你不回来。"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+services:
+  - type: web
+    name: creative-scout-portfolio
+    runtime: python
+    rootDir: portfolio
+    buildCommand: pip install -r requirements.txt
+    startCommand: python backend/server.py
+    healthCheckPath: /
+    envVars:
+      - key: DREAM_WEAVER_URL
+        sync: false
+      - key: SILENT_ASYLUM_URL
+        sync: false
+      - key: PROVENANCE_LAB_URL
+        sync: false
+
+  - type: web
+    name: creative-scout-provenance-lab
+    runtime: python
+    rootDir: provenance-lab
+    buildCommand: pip install -r requirements.txt
+    startCommand: python backend/server.py
+    healthCheckPath: /
+
+  - type: web
+    name: creative-scout-dream-weaver
+    runtime: python
+    rootDir: dream-weaver
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app
+    healthCheckPath: /
+    envVars:
+      - key: DEEPSEEK_API_KEY
+        sync: false
+      - key: DREAM_WEAVER_AI
+        value: "1"
+
+  - type: web
+    name: creative-scout-silent-asylum
+    runtime: python
+    rootDir: silent-asylum
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app
+    healthCheckPath: /
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true

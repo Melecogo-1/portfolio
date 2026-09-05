@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>死寂疗养院 | {{ scene.name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="game-body {{ erosion_state.class }} scene-{{ scene.id }}" data-erosion="{{ state.erosion }}">
+    <div class="ambient-grid"></div>
+    <div class="noise-layer"></div>
+
+    <header class="status-bar">
+        <div class="status-cluster">
+            <span class="status-label">精神侵蚀度</span>
+            <div class="erosion-meter" aria-label="精神侵蚀度 {{ state.erosion }} / 100">
+                <div class="erosion-bar-bg">
+                    <div class="erosion-bar-fill" style="width: {{ state.erosion }}%; background-color: {{ erosion_state.color }};"></div>
+                </div>
+                <span class="erosion-value" style="color: {{ erosion_state.color }};">{{ state.erosion }} / 100</span>
+            </div>
+            <span class="erosion-state-name" style="color: {{ erosion_state.color }};">{{ erosion_state.name }}</span>
+        </div>
+        <div class="status-cluster right">
+            <span class="status-label">信息碎片</span>
+            <span class="fragment-value">{{ state.fragments|length }} / 18</span>
+        </div>
+    </header>
+
+    <main class="game-layout">
+        <aside class="scene-panel">
+            <p class="case-label">CURRENT WARD</p>
+            <h1>{{ scene.name }}</h1>
+            <div class="danger-chip">{{ scene.danger }}</div>
+            <figure class="scene-photo" aria-label="场景证据照片">
+                <img src="{{ url_for('static', filename='images/scene-' ~ scene.id ~ '.png') }}" alt="疗养院走廊证据照片">
+                <figcaption>WARD CCTV / FRAME {{ '%02d'|format(scene.id) }}</figcaption>
+            </figure>
+            <p class="scene-note">每个选择都会改变记录。部分规则只在你违反之后才显得合理。</p>
+            <div class="mini-progress" aria-label="碎片收集进度">
+                {% for i in range(1, 19) %}
+                <span class="progress-dot {% if i in state.fragments %}found{% endif %}"></span>
+                {% endfor %}
+            </div>
+        </aside>
+
+        <section class="game-main">
+            <div class="text-area" id="textArea">
+                {% if show_rules %}
+                <div class="scene-entry paper-block">
+                    <p>{{ scene.entry_text }}</p>
+                </div>
+                {% endif %}
+
+                {% if hidden_hint %}
+                <div class="hidden-hint paper-block warning">
+                    <p>{{ hidden_hint }}</p>
+                </div>
+                {% endif %}
+
+                {% if state.show_no_cost and state.current_scene not in state.no_cost_used %}
+                <div class="no-cost-option paper-block" id="noCostOption">
+                    <p class="no-cost-desc">{{ scene.no_cost_reduction.condition_text }}</p>
+                    <button class="choice-btn no-cost-btn" onclick="openRitualModal()">
+                        <span>{{ scene.no_cost_reduction.description }}</span>
+                        <small>侵蚀度 {{ scene.no_cost_reduction.erosion_change }}</small>
+                    </button>
+                </div>
+                {% endif %}
+
+                {% if state.last_consequence %}
+                <div class="consequence-text paper-block">
+                    {% for line in state.last_consequence.split('\n') %}
+                    <p>{{ line }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if current_event and not state.game_over %}
+                <article class="event-block" id="eventBlock">
+                    <div class="event-trigger">{{ current_event.trigger_desc }}</div>
+                    <div class="event-description">
+                        {% for line in current_event.description.split('\n') %}
+                        <p>{{ line }}</p>
+                        {% endfor %}
+                    </div>
+
+                    <div class="choices-block" id="choicesBlock">
+                        {% for choice in current_event.choices %}
+                        <button class="choice-btn" onclick="makeChoice({{ loop.index0 }})" data-index="{{ loop.index0 }}">
+                            <span class="choice-number">{{ loop.index }}</span>
+                            <span class="choice-text">{{ choice.text }}</span>
+                        </button>
+                        {% endfor %}
+                    </div>
+                </article>
+                {% endif %}
+
+                {% if not current_event and not state.game_over %}
+                <div class="completion-block paper-block">
+                    <p>{{ scene.completion_text }}</p>
+                    <p class="next-scene-hint">正在进入下一区域...</p>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+
+    <nav class="bottom-bar" aria-label="游戏功能">
+        <button class="func-btn" onclick="viewRules()" title="查看规则">规则</button>
+        <button class="func-btn" onclick="viewNotes()" title="查看调查笔记">笔记 {{ state.fragments|length }}/18</button>
+        <button class="func-btn" onclick="manualSave()" title="手动存档">存档</button>
+        <a href="{{ url_for('index') }}" class="func-btn" title="返回主菜单">退出</a>
+    </nav>
+
+    <div class="modal-overlay" id="rulesModal" style="display: none;">
+        <div class="modal-content rules-modal">
+            <div class="modal-header">
+                <h2>{{ scene.name }} | 公示规则</h2>
+                <button class="modal-close" onclick="closeRules()" aria-label="关闭规则">×</button>
+            </div>
+            <div class="rules-list">
+                <div class="rules-paper">
+                    {% for rule in scene.rules %}
+                    <div class="rule-item">
+                        <span class="rule-number">{{ loop.index }}.</span>
+                        <span class="rule-text">{{ rule }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <p class="rules-notice">以上规则以纸质封存形式张贴于墙面。禁止涂改、撕毁、补全。</p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="notesModal" style="display: none;">
+        <div class="modal-content notes-modal">
+            <div class="modal-header">
+                <h2>调查笔记</h2>
+                <button class="modal-close" onclick="closeNotes()" aria-label="关闭笔记">×</button>
+            </div>
+            <div class="notes-content" id="notesContent">
+                {% if state.fragments %}
+                    {% for fid in state.fragments|sort %}
+                        {% set frag = fragments.get(fid) %}
+                        {% if frag %}
+                        <div class="note-fragment">
+                            <div class="note-header">
+                                <span class="note-number">碎片 #{{ fid }}</span>
+                                <span class="note-name">{{ frag.name }}</span>
+                            </div>
+                            <p class="note-text">{{ frag.content }}</p>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <p class="no-notes">尚未收集到任何信息碎片。</p>
+                    <p class="no-notes-hint">关键选择会留下记录，错误选择也会。</p>
+                {% endif %}
+
+                {% for fid in range(1, 19) %}
+                    {% if fid not in state.fragments %}
+                    <div class="note-fragment missing">
+                        <div class="note-header">
+                            <span class="note-number">碎片 #{{ fid }}</span>
+                            <span class="note-name">???</span>
+                        </div>
+                        <p class="note-text missing-text">[ 尚未发现 ]</p>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="deathModal" style="display: none;">
+        <div class="modal-content death-modal">
+            <div class="death-screen">
+                <h2 class="death-title" id="deathTitle"></h2>
+                <div class="death-text" id="deathText"></div>
+                <div class="death-buttons">
+                    <button class="death-btn retry-btn" onclick="retryFromEvent()">从当前事件重试</button>
+                    <button class="death-btn load-btn" onclick="loadLastSave()">读取最近存档</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fragment-toast" id="fragmentToast" style="display: none;">
+        <span class="toast-text" id="toastText"></span>
+    </div>
+
+    <div class="modal-overlay" id="assimilationModal" style="display: none;">
+        <div class="modal-content assimilation-modal">
+            <div class="assimilation-screen">
+                <p class="case-label">EROSION LIMIT REACHED</p>
+                <h2 class="assimilation-title">同化判定</h2>
+                <div class="assimilation-text" id="assimilationText"></div>
+                <div class="assimilation-meter" aria-hidden="true">
+                    <span></span>
+                </div>
+                <p class="assimilation-hint">记录正在被疗养院接管。</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="ritualModal" style="display: none;">
+        <div class="modal-content ritual-modal">
+            <div class="ritual-screen">
+                <p class="case-label">GROUNDING PROCEDURE</p>
+                <h2>清醒仪式</h2>
+                <p id="ritualDesc">你意识到自己正在重复一个动作。它可能让你清醒一点，也可能让疗养院记住你。</p>
+                <div class="ritual-warning">每个区域只能执行一次。执行后，这条记录会被封存。</div>
+                <div class="ritual-buttons">
+                    <button class="choice-btn no-cost-btn" onclick="triggerNoCost()">
+                        <span id="ritualAction">执行这个动作</span>
+                        <small>侵蚀度下降</small>
+                    </button>
+                    <button class="choice-btn ritual-cancel" onclick="closeRitualModal()">
+                        <span>忍住，不让它发现</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="transitionModal" style="display: none;">
+        <div class="modal-content transition-modal">
+            <p class="case-label" id="transitionLabel">AREA SEALED</p>
+            <div class="transition-text" id="transitionText"></div>
+            <button class="choice-btn continue-btn" id="transitionButton" onclick="continueToNextScene()">推开下一扇门</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/game.js') }}?v=transition-fix-2"></script>
+    <script>
+        {% if show_rules %}
+        showRulesModal();
+        {% endif %}
+
+        {% if state.show_no_cost %}
+        const noCostOption = document.getElementById('noCostOption');
+        if (noCostOption) noCostOption.style.display = 'block';
+        {% endif %}
+    </script>
+</body>
+</html>

@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>织梦者 · Dream Weaver</title>
+<style>
+  :root {
+    --bg: #0f0f12; --panel: #18181c; --border: #282830;
+    --text: #c4c4cc; --dim: #7c7c8a; --gold: #c9a96e; --red: #d94a4a;
+    --green: #4ade80; --blue: #60a5fa;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: "Noto Serif SC", "PingFang SC", "Microsoft YaHei", serif;
+    background: var(--bg); color: var(--text); height: 100vh; overflow: hidden;
+  }
+  .app {
+    display: grid; grid-template-columns: 1fr 340px;
+    grid-template-rows: 56px 1fr auto; height: 100vh;
+    gap: 1px; background: var(--border);
+  }
+
+  /* ── 顶栏 ── */
+  .topbar {
+    grid-column: 1/-1; background: var(--panel);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px; border-bottom: 1px solid var(--border);
+  }
+  .topbar .brand { font-size:1.05em; color:var(--gold); letter-spacing:0.1em; font-weight:400; }
+  .topbar .brand .sub { color:var(--dim); font-size:0.65em; letter-spacing:0.05em; margin-left:8px; }
+  .topbar .info { font-size:0.82em; color:var(--dim); display:flex; gap:18px; align-items:center; }
+  .topbar .info span { color:var(--text); }
+  .topbar select {
+    background:var(--bg); color:var(--text); border:1px solid var(--border);
+    padding:6px 12px; border-radius:3px; font-size:0.8em; font-family:inherit; cursor:pointer;
+  }
+  .topbar button {
+    background:transparent; color:var(--gold); border:1px solid var(--gold);
+    padding:6px 16px; border-radius:3px; cursor:pointer; font-size:0.8em; font-family:inherit;
+    transition:all 0.2s;
+  }
+  .topbar button:hover { background:var(--gold); color:var(--bg); }
+
+  /* ── 叙事区 ── */
+  .narrative {
+    background:var(--panel); padding:28px 32px; overflow-y:auto;
+    line-height:2; font-size:0.93em; display:flex; flex-direction:column; gap:20px;
+  }
+  .narrative .msg {}
+  .narrative .msg .player-line { color:var(--gold); font-size:0.82em; margin-bottom:6px; letter-spacing:0.04em; }
+  .narrative .msg .player-line::before { content:"▸ "; }
+  .narrative .msg .world-line { color:var(--text); white-space:pre-wrap; word-break:break-word; line-height:2.1; }
+  .narrative .msg .meta-line { font-size:0.72em; color:var(--dim); margin-top:8px; }
+  .narrative .ending-block {
+    border:1px solid var(--gold); padding:28px 24px; margin:16px 0;
+    border-radius:6px; background:rgba(201,169,110,0.05);
+  }
+  .narrative .ending-block .ending-title {
+    color:var(--gold); font-size:1.15em; text-align:center;
+    letter-spacing:0.15em; margin-bottom:20px;
+  }
+  .narrative .intro-block {
+    border-left:2px solid var(--gold); padding:8px 0 8px 18px; color:var(--dim);
+    font-size:0.88em; line-height:2; margin:12px 0;
+  }
+  .narrative details { margin-top:10px; color:var(--dim); font-size:0.8em; }
+  .narrative details summary { cursor:pointer; }
+
+  /* ── 侧边栏 ── */
+  .sidebar {
+    background:var(--panel); padding:18px 14px; overflow-y:auto;
+    display:flex; flex-direction:column; gap:14px;
+    border-left:1px solid var(--border);
+  }
+  .sidebar h3 {
+    font-size:0.7em; letter-spacing:0.08em; color:var(--dim);
+    margin-bottom:8px; font-weight:400; text-transform:uppercase;
+    display:flex; align-items:center; gap:6px;
+  }
+  .sidebar h3::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* 玩家信息 */
+  .player-card {
+    background:var(--bg); border-radius:6px; padding:12px 14px;
+    border-left:2px solid var(--gold);
+  }
+  .player-card .pname { font-size:1em; font-weight:600; color:var(--text); }
+  .player-card .attrs { display:flex; gap:14px; margin-top:8px; font-size:0.78em; color:var(--dim); }
+  .player-card .attrs .attr { text-align:center; }
+  .player-card .attrs .attr .val { font-size:1.3em; color:var(--text); font-weight:600; }
+
+  /* 因果卡列表 */
+  .card-list { display:flex; flex-direction:column; gap:6px; }
+  .causal-card {
+    background:var(--bg); border-radius:5px; padding:10px 12px;
+    border:1px solid var(--border); cursor:pointer;
+    transition:all 0.25s; position:relative; overflow:hidden;
+  }
+  .causal-card:hover { border-color:var(--gold); }
+  .causal-card.new-card {
+    animation: cardFlipIn 0.6s ease;
+    border-color:var(--gold);
+  }
+  @keyframes cardFlipIn {
+    0% { transform:rotateY(90deg); opacity:0; }
+    60% { transform:rotateY(-10deg); }
+    100% { transform:rotateY(0deg); opacity:1; }
+  }
+  .causal-card .card-type {
+    font-size:0.62em; letter-spacing:0.06em; text-transform:uppercase;
+  }
+  .causal-card .card-type.relation { color:var(--blue); }
+  .causal-card .card-type.knowledge { color:#a78bfa; }
+  .causal-card .card-type.item { color:var(--gold); }
+  .causal-card .card-type.crime { color:var(--red); }
+  .causal-card .card-name { font-size:0.88em; font-weight:600; margin:2px 0; }
+  .causal-card .card-desc { font-size:0.72em; color:var(--dim); line-height:1.5; }
+
+  /* NPC 状态 */
+  .npc-card {
+    background:var(--bg); border-radius:4px; padding:8px 10px;
+    margin-bottom:4px; border-left:2px solid var(--border);
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:0.8em; transition:all 0.4s;
+  }
+  .npc-card.dead { border-left-color:var(--red); opacity:0.45; }
+  .npc-card .npc-name { font-weight:600; }
+  .npc-card .npc-role { color:var(--dim); font-size:0.78em; margin-left:4px; }
+  .npc-card .npc-att { font-size:0.78em; min-width:48px; text-align:right; }
+  .npc-card .npc-att.positive { color:var(--green); }
+  .npc-card .npc-att.negative { color:var(--red); }
+  .npc-card .npc-att.neutral { color:var(--dim); }
+  .att-highlight { animation:attPulse 0.6s ease 2; }
+  @keyframes attPulse {
+    0%,100% { background:transparent; }
+    50% { background:rgba(201,169,110,0.15); }
+  }
+
+  /* ── 底部操作栏 ── */
+  .action-bar {
+    grid-column:1/-1; background:var(--panel); padding:8px 24px;
+    display:flex; gap:5px 8px; align-items:center; flex-wrap:wrap;
+    border-top:1px solid var(--border);
+    max-height:210px; overflow-y:auto;
+    align-content:flex-start;
+  }
+  .action-bar .quick-btn {
+    background:transparent; color:var(--dim); border:1px solid var(--border);
+    padding:6px 12px; border-radius:5px; cursor:pointer; font-size:0.8em;
+    font-family:inherit; white-space:nowrap; transition:all 0.2s;
+  }
+  .action-bar .quick-btn:hover { border-color:var(--gold); color:var(--gold); }
+  .action-bar .quick-btn.violent:hover:not(:disabled) { border-color:var(--red); color:var(--red); }
+  .action-bar .btn-sep {
+    width:1px; height:18px; background:var(--border); margin:0 4px; flex-shrink:0;
+    align-self:center;
+  }
+
+  /* ── 骰子动画覆盖层 ── */
+  .dice-overlay {
+    position:fixed; top:0; left:0; right:0; bottom:0;
+    background:rgba(0,0,0,0.75); display:flex; align-items:center;
+    justify-content:center; z-index:999;
+    animation:fadeIn 0.15s ease;
+  }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  .dice-box {
+    background:var(--panel); border:1px solid var(--gold);
+    border-radius:16px; padding:40px 48px; text-align:center;
+    min-width:200px;
+  }
+  .dice-number {
+    font-size:5em; font-weight:700; color:var(--gold);
+    font-family:"Georgia","Noto Serif SC",serif;
+    transition:all 0.05s;
+  }
+  .dice-result { font-size:1em; margin-top:12px; }
+  .dice-result.success { color:var(--green); }
+  .dice-result.failure { color:var(--red); }
+  .dice-detail { font-size:0.78em; color:var(--dim); margin-top:8px; }
+
+  /* ── 因果卡详情弹窗 ── */
+  .modal-overlay {
+    position:fixed; top:0; left:0; right:0; bottom:0;
+    background:rgba(0,0,0,0.8); display:flex; align-items:center;
+    justify-content:center; z-index:1000;
+  }
+  .modal-card {
+    background:var(--panel); border:1px solid var(--gold);
+    border-radius:12px; padding:32px; max-width:440px; width:90%;
+    max-height:80vh; overflow-y:auto;
+  }
+  .modal-card .m-type { font-size:0.7em; letter-spacing:0.08em; margin-bottom:4px; }
+  .modal-card .m-name { font-size:1.3em; font-weight:600; color:var(--gold); margin-bottom:16px; }
+  .modal-card .m-desc { font-size:0.92em; line-height:1.9; color:var(--text); margin-bottom:20px; }
+  .modal-card .m-story {
+    font-size:0.85em; line-height:2; color:var(--dim);
+    border-top:1px solid var(--border); padding-top:16px; margin-top:16px;
+    font-style:italic;
+  }
+  .modal-card .m-effects { font-size:0.8em; color:var(--dim); margin-top:12px; }
+  .modal-card .m-effects span { color:var(--text); }
+  .modal-card .m-close {
+    background:transparent; color:var(--dim); border:1px solid var(--border);
+    padding:8px 20px; border-radius:4px; cursor:pointer; margin-top:20px;
+    font-family:inherit; transition:all 0.2s;
+  }
+  .modal-card .m-close:hover { border-color:var(--gold); color:var(--gold); }
+
+  /* ── Toast ── */
+  #toast {
+    position:fixed; top:20px; left:50%; transform:translateX(-50%);
+    background:var(--red); color:#fff; padding:10px 24px; border-radius:4px;
+    font-size:0.85em; z-index:2000; display:none; pointer-events:none;
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width:4px; }
+  ::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
+
+  /* === Portfolio refinement v2 === */
+  body {
+    background:
+      radial-gradient(circle at 18% 10%, rgba(96,165,250,0.09), transparent 30%),
+      radial-gradient(circle at 82% 78%, rgba(201,169,110,0.08), transparent 34%),
+      #09090b;
+  }
+  .app {
+    grid-template-columns: minmax(0, 1fr) 380px;
+    grid-template-rows: 64px minmax(0, 1fr) 188px;
+    background: rgba(40,40,48,0.9);
+  }
+  .topbar {
+    background: rgba(18,18,22,0.96);
+    backdrop-filter: blur(18px);
+  }
+  .topbar .brand { font-size: 1.15em; }
+  .narrative {
+    padding: 34px 42px;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.025), transparent 34%),
+      var(--panel);
+  }
+  .narrative .msg {
+    width: min(900px, 100%);
+    border: 1px solid rgba(201,169,110,0.12);
+    background: rgba(15,15,18,0.58);
+    padding: 20px 22px;
+    border-radius: 8px;
+  }
+  .narrative .msg .world-line { font-size: 1.02em; }
+  .intro-block {
+    width: min(900px, 100%);
+    background: rgba(201,169,110,0.035);
+    border: 1px solid rgba(201,169,110,0.16);
+    border-left: 2px solid var(--gold);
+    border-radius: 6px;
+  }
+  .sidebar {
+    padding: 18px;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.022), transparent 45%),
+      rgba(18,18,22,0.96);
+  }
+  .player-card, .causal-card, .npc-card {
+    background: rgba(10,10,12,0.72);
+  }
+  .world-map {
+    display: grid;
+    gap: 7px;
+    margin-top: 8px;
+  }
+  .map-node {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    border: 1px solid var(--border);
+    background: rgba(15,15,18,0.64);
+    border-radius: 5px;
+    padding: 8px 10px;
+    color: var(--dim);
+    font-size: 0.76em;
+  }
+  .map-node.current {
+    color: var(--gold);
+    border-color: rgba(201,169,110,0.48);
+    background: rgba(201,169,110,0.07);
+  }
+  .map-node .map-state { font-family: Arial, sans-serif; font-size: 0.86em; }
+  .action-bar {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 10px;
+    padding: 14px 22px;
+    max-height: none;
+    overflow: hidden;
+    background: rgba(18,18,22,0.98);
+  }
+  .composer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    width: 100%;
+  }
+  .command-input {
+    min-height: 44px;
+    border: 1px solid rgba(201,169,110,0.28);
+    border-radius: 6px;
+    background: rgba(8,8,10,0.86);
+    color: var(--text);
+    padding: 0 15px;
+    font-family: inherit;
+    font-size: 0.92em;
+    outline: none;
+  }
+  .command-input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201,169,110,0.08);
+  }
+  .send-btn {
+    min-width: 112px;
+    border: 1px solid var(--gold);
+    border-radius: 6px;
+    background: linear-gradient(90deg, rgba(201,169,110,0.2), rgba(201,169,110,0.07));
+    color: var(--gold);
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .send-btn:hover:not(:disabled) { background: var(--gold); color: #101012; }
+  .quick-actions {
+    display: flex;
+    gap: 7px 8px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    overflow: auto;
+    padding-right: 4px;
+  }
+  .action-group-label {
+    color: var(--dim);
+    border: 1px solid transparent;
+    padding: 7px 2px;
+    font-size: 0.68em;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .action-bar .quick-btn {
+    background: rgba(15,15,18,0.72);
+    min-height: 34px;
+  }
+  .action-bar .quick-btn:disabled, .send-btn:disabled, .command-input:disabled {
+    opacity: 0.45;
+    cursor: wait;
+  }
+  .empty-actions {
+    color: var(--dim);
+    font-size: 0.82em;
+    padding: 8px 0;
+  }
+  @media (max-width: 980px) {
+    .app { grid-template-columns: 1fr; grid-template-rows: auto minmax(0,1fr) 260px 190px; }
+    .sidebar { grid-row: 3; border-left: 0; border-top: 1px solid var(--border); overflow: auto; }
+    .action-bar { grid-row: 4; }
+  }
+
+
+
+  /* Portfolio refinement v3: atmospheric scene art */
+  .narrative {
+    position: relative;
+    background:
+      linear-gradient(90deg, rgba(19,20,24,0.94) 0%, rgba(19,20,24,0.84) 48%, rgba(19,20,24,0.72) 100%),
+      linear-gradient(180deg, rgba(19,20,24,0.35), rgba(19,20,24,0.98)),
+      url('/static/assets/blackwood-village-hero.png') center / cover no-repeat;
+  }
+  .narrative::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 72% 24%, rgba(207,171,93,0.14), transparent 26%),
+      linear-gradient(180deg, transparent 0%, rgba(19,20,24,0.82) 88%);
+    opacity: 0.85;
+  }
+  .narrative > * {
+    position: relative;
+    z-index: 1;
+  }
+  .narrative .msg,
+  .intro-block {
+    max-width: 900px;
+    background: rgba(10,10,12,0.68);
+    backdrop-filter: blur(8px);
+  }
+  .intro-block {
+    border-left-color: rgba(207,171,93,0.78);
+  }
+  .world-map {
+    gap: 8px;
+  }
+  .map-node {
+    min-height: 38px;
+  }
+
+
+
+  /* Portfolio refinement v4: AI referee visibility */
+  .ai-verdict {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px 14px;
+    align-items: center;
+    border-top: 1px solid rgba(207,171,93,0.18);
+    padding-top: 12px;
+    color: var(--dim);
+    font-size: 0.78em;
+  }
+  .ai-verdict strong {
+    color: var(--gold);
+    font-weight: 800;
+    margin-right: 8px;
+  }
+  .ai-risk {
+    border: 1px solid rgba(207,171,93,0.34);
+    color: var(--gold);
+    padding: 4px 8px;
+    font-size: 0.72em;
+    text-transform: uppercase;
+  }
+  .quick-btn.ai-suggestion {
+    border-color: rgba(122,162,184,0.45);
+    color: var(--blue);
+    background: rgba(122,162,184,0.08);
+  }
+
+
+
+  /* Portfolio refinement v5: visual-first playable showcase */
+  :root {
+    --scene-image: url('/static/assets/blackwood-village-hero.png');
+  }
+  .app {
+    grid-template-columns: minmax(0, 1fr) 360px;
+    grid-template-rows: 58px minmax(0, 1fr) 142px;
+  }
+  .topbar { box-shadow: 0 18px 40px rgba(0,0,0,0.24); }
+  .topbar .info { max-width: 44vw; overflow: hidden; }
+  .topbar .info span { white-space: nowrap; }
+  .narrative {
+    padding: 28px 38px 22px;
+    gap: 14px;
+    background:
+      linear-gradient(90deg, rgba(9,9,11,0.98) 0%, rgba(12,13,16,0.88) 42%, rgba(12,13,16,0.54) 100%),
+      linear-gradient(180deg, rgba(9,9,11,0.1), rgba(9,9,11,0.94) 92%),
+      var(--scene-image) center / cover no-repeat;
+    scrollbar-width: thin;
+  }
+  .narrative::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(90deg, transparent 0%, rgba(201,169,110,0.055) 55%, transparent 100%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.018) 0, rgba(255,255,255,0.018) 1px, transparent 1px, transparent 4px);
+    mix-blend-mode: screen;
+    opacity: 0.48;
+  }
+  .narrative .msg, .intro-block {
+    width: min(760px, 100%);
+    max-width: 760px;
+    border-radius: 8px;
+  }
+  .narrative .msg {
+    padding: 18px 20px;
+    transition: opacity 0.25s ease, max-height 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+  }
+  .narrative .msg.focus-msg {
+    border-color: rgba(201,169,110,0.34);
+    background: rgba(9,9,11,0.74);
+    box-shadow: 0 20px 70px rgba(0,0,0,0.34), 0 0 0 1px rgba(201,169,110,0.06) inset;
+  }
+  .narrative .msg.archived {
+    max-height: 82px;
+    opacity: 0.34;
+    overflow: hidden;
+    transform: scale(0.988);
+  }
+  .narrative .msg.archived:hover { max-height: 220px; opacity: 0.72; }
+  .narrative .msg.archived .ai-verdict { display: none; }
+  .narrative .msg .world-line { font-size: 0.98em; line-height: 1.82; }
+  .narrative .msg.focus-msg .world-line { font-size: 1.04em; line-height: 1.9; }
+  .narrative .msg .player-line { color: #d7bd82; font-size: 0.78em; }
+  .intro-block { padding: 12px 18px; line-height: 1.75; max-height: 88px; overflow: hidden; opacity: 0.62; }
+  .sidebar { padding: 16px 14px; }
+  .player-card {
+    border: 1px solid rgba(201,169,110,0.28);
+    border-left: 1px solid rgba(201,169,110,0.28);
+    background: linear-gradient(135deg, rgba(201,169,110,0.12), rgba(9,9,11,0.88) 48%);
+  }
+  .player-card .attrs { justify-content: space-between; }
+  .world-map { gap: 6px; }
+  .map-node { min-height: 34px; padding: 7px 9px; }
+  .card-list { gap: 7px; }
+  .causal-card { padding: 9px 10px; }
+  .action-bar {
+    grid-template-rows: 44px minmax(0, 1fr);
+    gap: 9px;
+    padding: 12px 18px;
+    box-shadow: 0 -18px 60px rgba(0,0,0,0.32);
+  }
+  .composer { height: 44px; }
+  .command-input { min-height: 42px; font-size: 0.88em; }
+  .send-btn { min-width: 124px; }
+  .curated-actions {
+    display: grid;
+    grid-template-columns: auto repeat(3, minmax(170px, 1fr)) auto;
+    gap: 8px;
+    align-items: start;
+    overflow: hidden;
+  }
+  .action-group-label { align-self: center; white-space: nowrap; color: rgba(201,169,110,0.76); }
+  .action-bar .quick-btn { min-height: 34px; overflow: hidden; text-overflow: ellipsis; }
+  .action-bar .quick-btn.primary-action {
+    min-height: 40px;
+    color: #d8c397;
+    border-color: rgba(201,169,110,0.42);
+    background: linear-gradient(180deg, rgba(201,169,110,0.1), rgba(9,9,11,0.74));
+    font-size: 0.82em;
+  }
+  .action-bar .quick-btn.primary-action:hover:not(:disabled) { background: rgba(201,169,110,0.18); }
+  .more-actions { position: relative; align-self: stretch; color: var(--dim); font-size: 0.78em; }
+  .more-actions summary {
+    height: 40px;
+    min-width: 92px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 5px;
+    background: rgba(15,15,18,0.72);
+    list-style: none;
+  }
+  .more-actions summary::-webkit-details-marker { display: none; }
+  .more-actions[open] summary { color: var(--gold); border-color: rgba(201,169,110,0.36); }
+  .more-action-grid {
+    position: absolute;
+    right: 0;
+    bottom: 48px;
+    width: min(560px, calc(100vw - 44px));
+    max-height: 260px;
+    overflow: auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid rgba(201,169,110,0.26);
+    border-radius: 8px;
+    background: rgba(13,13,16,0.98);
+    box-shadow: 0 22px 80px rgba(0,0,0,0.55);
+    z-index: 5;
+  }
+  .ai-verdict { margin-top: 12px; padding-top: 10px; font-size: 0.74em; opacity: 0.86; }
+  @media (max-width: 1100px) {
+    .app { grid-template-columns: minmax(0, 1fr) 320px; }
+    .curated-actions { grid-template-columns: auto repeat(2, minmax(150px, 1fr)) auto; }
+    .curated-actions .primary-action:nth-of-type(3) { display: none; }
+  }
+  @media (max-width: 980px) {
+    .app { grid-template-rows: auto minmax(0,1fr) 220px 170px; }
+    .narrative { padding: 20px; }
+    .curated-actions { grid-template-columns: 1fr 1fr; overflow: auto; }
+    .action-group-label { grid-column: 1 / -1; }
+    .more-actions { grid-column: 1 / -1; }
+  }
+
+
+
+  /* Portfolio refinement v6: make AI latency feel intentional */
+  .thinking-line {
+    min-height: 86px;
+    display: grid;
+    gap: 10px;
+    align-content: center;
+    color: var(--dim);
+  }
+  .thinking-line .thinking-title {
+    color: #d8c397;
+    font-size: 0.86em;
+    letter-spacing: 0.08em;
+  }
+  .thinking-line .thinking-dots {
+    display: flex;
+    gap: 7px;
+  }
+  .thinking-line .thinking-dots span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--gold);
+    opacity: 0.28;
+    animation: thinkingPulse 1.2s ease-in-out infinite;
+  }
+  .thinking-line .thinking-dots span:nth-child(2) { animation-delay: 0.18s; }
+  .thinking-line .thinking-dots span:nth-child(3) { animation-delay: 0.36s; }
+  @keyframes thinkingPulse {
+    0%, 100% { transform: translateY(0); opacity: 0.25; }
+    50% { transform: translateY(-4px); opacity: 0.9; }
+  }
+  .composer.loading .send-btn {
+    color: #101012;
+    background: var(--gold);
+  }
+
+
+
+  /* Portfolio refinement v7: remove cheap icon language */
+  .topbar .info { gap: 22px; font-family: Inter, "Microsoft YaHei", sans-serif; }
+  .topbar .info > span { color: rgba(196,196,204,0.58); font-size: 0.72em; letter-spacing: 0.11em; }
+  .topbar .info > span span { color: var(--text); letter-spacing: 0.02em; margin-left: 6px; }
+  .sidebar h3 { font-family: Inter, "Microsoft YaHei", sans-serif; letter-spacing: 0.14em; color: rgba(201,169,110,0.62); }
+  .player-card .attrs .attr { min-width: 46px; color: rgba(201,169,110,0.54); font-family: Inter, "Microsoft YaHei", sans-serif; letter-spacing: 0.08em; }
+  .player-card .attrs .attr .val { margin-top: 3px; font-family: Georgia, serif; letter-spacing: 0; }
+  .action-bar .quick-btn { font-family: "Noto Serif SC", "Microsoft YaHei", serif; }
+  .quick-btn::before { content: ''; display: inline-block; width: 10px; height: 1px; margin-right: 7px; vertical-align: middle; background: currentColor; opacity: 0.42; }
+  .quick-btn.ai-suggestion::before { width: 6px; height: 6px; border: 1px solid currentColor; background: transparent; transform: rotate(45deg); opacity: 0.75; }
+  .quick-btn.violent::before { background: var(--red); height: 2px; opacity: 0.8; }
+  .causal-card .card-type { letter-spacing: 0.14em; }
+  .map-node .map-state { letter-spacing: 0.08em; }
+
+
+
+  /* Portfolio refinement v8: dossier-first mystery interface */
+  .app {
+    grid-template-columns: minmax(0, 1fr) 296px;
+    grid-template-rows: 54px minmax(0, 1fr) 136px;
+  }
+  .topbar {
+    padding: 0 22px;
+  }
+  .topbar .brand {
+    color: #efe7d7;
+    letter-spacing: 0.32em;
+    font-size: 0.92em;
+  }
+  .topbar .brand .sub {
+    letter-spacing: 0.18em;
+    color: rgba(201,169,110,0.58);
+  }
+  .topbar select,
+  .topbar button {
+    height: 30px;
+    padding: 0 10px;
+    border-color: rgba(201,169,110,0.22);
+    color: rgba(239,231,215,0.78);
+    background: rgba(7,7,8,0.54);
+  }
+  .narrative {
+    padding: 34px 46px 24px;
+  }
+  .narrative .msg,
+  .intro-block {
+    width: min(720px, 100%);
+    max-width: 720px;
+  }
+  .narrative .msg.focus-msg {
+    background: linear-gradient(180deg, rgba(8,8,10,0.82), rgba(8,8,10,0.66));
+  }
+  .intro-block {
+    display: none;
+  }
+  .case-open {
+    width: min(720px, 100%);
+    min-height: min(520px, 68vh);
+    display: grid;
+    align-content: end;
+    gap: 22px;
+    padding: 28px 0 6px;
+  }
+  .case-kicker {
+    font-family: Inter, "Microsoft YaHei", sans-serif;
+    color: rgba(201,169,110,0.74);
+    font-size: 0.72em;
+    letter-spacing: 0.22em;
+  }
+  .case-title {
+    color: #f3ead9;
+    font-size: clamp(2.8rem, 7vw, 6.5rem);
+    line-height: 0.96;
+    letter-spacing: 0.02em;
+    font-weight: 900;
+    text-shadow: 0 18px 60px rgba(0,0,0,0.65);
+  }
+  .case-subtitle {
+    color: rgba(239,231,215,0.66);
+    font-size: 1.05em;
+    line-height: 1.9;
+    max-width: 640px;
+  }
+  .case-prompt {
+    display: inline-flex;
+    width: fit-content;
+    border-top: 1px solid rgba(201,169,110,0.36);
+    padding-top: 14px;
+    color: rgba(201,169,110,0.82);
+    font-size: 0.86em;
+    letter-spacing: 0.08em;
+  }
+  .sidebar {
+    gap: 9px;
+    padding: 16px 12px;
+    background:
+      linear-gradient(180deg, rgba(11,11,13,0.98), rgba(16,16,19,0.94)),
+      rgba(18,18,22,0.96);
+  }
+  .dossier-hero {
+    min-height: 132px;
+    border: 1px solid rgba(201,169,110,0.22);
+    background:
+      linear-gradient(135deg, rgba(201,169,110,0.12), transparent 36%),
+      rgba(5,5,7,0.74);
+    padding: 16px;
+    display: grid;
+    align-content: space-between;
+  }
+  .dossier-code {
+    font-family: Inter, "Microsoft YaHei", sans-serif;
+    font-size: 0.64em;
+    letter-spacing: 0.18em;
+    color: rgba(201,169,110,0.62);
+  }
+  .dossier-name {
+    color: #efe7d7;
+    font-size: 1.18em;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    margin-top: 8px;
+  }
+  .dossier-line {
+    color: rgba(196,196,204,0.56);
+    font-size: 0.76em;
+    line-height: 1.7;
+    margin-top: 8px;
+  }
+  .identity-card {
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(5,5,7,0.46);
+    padding: 12px 14px;
+  }
+  .identity-card .id-name {
+    color: rgba(239,231,215,0.88);
+    font-size: 0.92em;
+    letter-spacing: 0.08em;
+  }
+  .identity-card .id-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 9px;
+  }
+  .identity-card .id-tags span {
+    border: 1px solid rgba(201,169,110,0.2);
+    color: rgba(201,169,110,0.64);
+    padding: 4px 7px;
+    font-size: 0.66em;
+    letter-spacing: 0.06em;
+  }
+  .identity-card .id-stats {
+    margin-top: 10px;
+    color: rgba(196,196,204,0.38);
+    font-family: Inter, "Microsoft YaHei", sans-serif;
+    font-size: 0.62em;
+    letter-spacing: 0.08em;
+  }
+  .player-card { display: none; }
+  .drawer {
+    border: 1px solid rgba(255,255,255,0.07);
+    background: rgba(5,5,7,0.36);
+    padding: 0;
+  }
+  .drawer > h3 { display: none; }
+  .drawer > summary,
+  .drawer .drawer-summary {
+    list-style: none;
+    cursor: pointer;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    color: rgba(239,231,215,0.72);
+    font-family: Inter, "Microsoft YaHei", sans-serif;
+    font-size: 0.68em;
+    letter-spacing: 0.14em;
+  }
+  .drawer > summary::-webkit-details-marker { display: none; }
+  .drawer > summary::after {
+    content: 'OPEN';
+    color: rgba(201,169,110,0.42);
+    font-size: 0.78em;
+    letter-spacing: 0.08em;
+  }
+  .drawer[open] > summary::after { content: 'CLOSE'; }
+  .drawer > :not(summary) {
+    margin: 0 10px 10px;
+  }
+  .drawer:not([open]) > :not(summary) {
+    display: none !important;
+  }
+  #objectiveSection.drawer {
+    display: block !important;
+    border-color: rgba(201,169,110,0.18);
+  }
+  #objectiveSection.drawer > summary::after { content: 'PIN'; }
+  #objectiveSection.drawer:not([open]) > :not(summary) { display: block !important; }
+  #objectiveHint {
+    color: rgba(201,169,110,0.78) !important;
+    font-size: 0.76em !important;
+    line-height: 1.75 !important;
+    max-height: 72px;
+    overflow: hidden;
+  }
+  .world-map,
+  .card-list,
+  #npcList,
+  #causalLog {
+    max-height: 176px;
+    overflow: auto;
+  }
+  .causal-card,
+  .npc-card,
+  .map-node {
+    background: rgba(0,0,0,0.22);
+  }
+  .action-group-label.primary-label {
+    color: rgba(201,169,110,0.58);
+  }
+  .action-group-label.primary-label::before {
+    content: '世界低语';
+  }
+  .action-group-label.primary-label {
+    font-size: 0;
+  }
+  .action-group-label.primary-label::before {
+    font-size: 11px;
+  }
+  .command-input::placeholder {
+    color: rgba(196,196,204,0.34);
+  }
+  @media (max-width: 980px) {
+    .case-title { font-size: 3rem; }
+    .sidebar { max-height: 220px; }
+  }
+
+
+
+  /* Portfolio refinement v9: remove setup friction */
+  #worldSelect {
+    width: 1px;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+  }
+  .load-case-btn {
+    min-width: 88px;
+    letter-spacing: 0.08em;
+  }
+  .load-case-btn::before {
+    content: '';
+    display: inline-block;
+    width: 18px;
+    height: 1px;
+    margin-right: 8px;
+    vertical-align: middle;
+    background: currentColor;
+    opacity: 0.46;
+  }
+  .sidebar .drawer:not(#objectiveSection) {
+    opacity: 0.72;
+  }
+  .sidebar .drawer:not(#objectiveSection):hover {
+    opacity: 1;
+  }
+
+
+
+  /* Portfolio refinement v10: keep mechanics behind the dossier */
+  #worldSelect { display: none; }
+  .identity-card .id-stats { display: none; }
+  .identity-card:hover .id-stats { display: block; }
+
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- 顶栏 -->
+  <div class="topbar">
+    <div>
+      <span class="brand">织 梦 者</span><span class="sub">Dream Weaver</span>
+    </div>
+    <div class="info">
+      <span>CASE <span id="worldName">—</span></span>
+      <span>TIME <span id="gameTime">—</span></span>
+      <span>AREA <span id="currentLoc">—</span></span>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <select id="worldSelect" aria-label="world"><option value="">选择世界…</option></select>
+      <button class="load-case-btn" onclick="loadWorld()">打开档案</button>
+    </div>
+  </div>
+
+  <!-- 叙事区 -->
+  <div class="narrative" id="narrative">
+    <div class="case-open">
+      <div class="case-kicker">CASE FILE / BLACKWOOD</div>
+      <div class="case-title">死者来信</div>
+      <div class="case-subtitle">母亲已经下葬五年。今天早上，她的笔迹出现在你桌上。信里没有解释，只有一个地名和一个女人的名字。</div>
+      <div class="case-prompt">载入档案，打开第一封信</div>
+    </div>
+  </div>
+
+  <!-- 侧边栏 -->
+  <div class="sidebar" id="sidebar">
+    <div class="dossier-hero">
+      <div>
+        <div class="dossier-code">DOSSIER 01</div>
+        <div class="dossier-name">黑木村</div>
+      </div>
+      <div class="dossier-line">档案未封存。世界会记住你的措辞，也会误解你的沉默。</div>
+    </div>
+    <div id="playerInfo" style="color:var(--dim);font-size:0.82em;"></div>
+    <details class="drawer" id="objectiveSection" open style="display:none;">
+      <summary>心中所想</summary>
+      <div id="objectiveHint"></div>
+    </details>
+    <details class="drawer" id="mapSection" style="display:none;">
+      <summary>场景地图</summary>
+      <div class="world-map" id="worldMap"></div>
+    </details>
+    <details class="drawer" id="cardSection" style="display:none;">
+      <summary>因果卡</summary>
+      <div class="card-list" id="cardList"></div>
+    </details>
+    <details class="drawer" id="npcSection" style="display:none;">
+      <summary>村中人物</summary>
+      <div id="npcList"></div>
+    </details>
+    <details class="drawer" id="causalLogSection" style="display:none;">
+      <summary>世界记忆</summary>
+      <div id="causalLog" style="font-size:0.73em;color:var(--dim);line-height:1.8;"></div>
+    </details>
+  </div>
+
+  <div class="action-bar" id="actionBar">
+    <span style="color:var(--dim);font-size:0.82em;">档案尚未打开</span>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+// ── 全局状态 ──
+let isLoading = false;
+
+const SCENE_IMAGES = {
+  village_square: "/static/assets/blackwood-village-hero.png",
+  tavern: "/static/assets/scene-tavern.png",
+  forest: "/static/assets/scene-forest.png",
+  mine: "/static/assets/scene-mine.png"
+};
+
+function setSceneArt(d) {
+  const id = d.current_location_id || Object.keys(d.locations || {}).find(k => d.locations[k] === d.current_location) || "village_square";
+  const img = SCENE_IMAGES[id] || SCENE_IMAGES.village_square;
+  document.documentElement.style.setProperty("--scene-image", `url('${img}')`);
+}
+
+function compactNarrativeHistory() {
+  const msgs = Array.from(document.querySelectorAll("#narrative .msg"));
+  msgs.forEach((el, index) => {
+    const isLast = index === msgs.length - 1;
+    el.classList.toggle("archived", !isLast && msgs.length > 2);
+    el.classList.toggle("focus-msg", isLast);
+  });
+}
+
+let knownCardIds = new Set();
+let lastNpcAttitudes = {};
+
+// ── 工具函数 ──
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 3000);
+}
+
+// ── 加载世界列表 ──
+fetch('/api/worlds').then(r => r.json()).then(worlds => {
+  const sel = document.getElementById('worldSelect');
+  if (!worlds || worlds.length === 0) {
+    toast('没有可用的世界数据，请检查 data/ 目录');
+    return;
+  }
+  worlds.forEach(w => {
+    const o = document.createElement('option');
+    o.value = w.id; o.textContent = w.name; sel.appendChild(o);
+  });
+  // 自动选择第一个世界
+  sel.value = worlds[0].id;
+}).catch(() => toast('无法连接服务器，请确认已启动 python app.py'));
+
+// ── 加载世界 ──
+async function loadWorld() {
+  const sel = document.getElementById('worldSelect');
+  if (!sel.value) { toast('请先选择一个世界'); return; }
+  try {
+    const r = await fetch('/api/load_world', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({world_id:sel.value})
+    });
+    const d = await r.json();
+    if (d.error) { toast(d.error); return; }
+
+    // 更新顶栏
+    document.getElementById('worldName').textContent = d.message.replace('已加载: ','');
+    document.getElementById('currentLoc').textContent = d.current_location;
+    document.getElementById('gameTime').textContent = '08:00';
+
+    // 开场叙事
+    const narrative = document.getElementById('narrative');
+    narrative.innerHTML = '';
+
+    // 身份介绍
+    const intro = document.createElement('div');
+    intro.className = 'intro-block';
+    intro.innerHTML = escapeHtml(d.description).replace(/\n/g,'<br>');
+    narrative.appendChild(intro);
+
+    // 开场场景
+    const openMsg = document.createElement('div');
+    openMsg.className = 'msg';
+    openMsg.innerHTML = `
+      <div class="case-open">
+        <div class="case-kicker">CASE FILE 1943-2026</div>
+        <div class="case-title">死者来信</div>
+        <div class="case-subtitle">母亲已经下葬五年。今天早上，她的笔迹出现在你桌上。信里没有解释，只有一个地名和一个女人的名字：黑木村，玛莎。</div>
+        <div class="case-prompt">你把旧信折进口袋。村口的风里有一股甜腻的腐味。</div>
+      </div>
+    `;
+    narrative.appendChild(openMsg);
+
+    // 初始化侧边栏
+    buildSidebar(d);
+    renderWorldMap(d);
+    setSceneArt(d);
+    compactNarrativeHistory();
+
+    // 初始化输入栏
+    buildActionBar(d);
+
+    // 初始化已知卡片
+    knownCardIds = new Set((d.starting_cards||[]).map(c=>c.id));
+    lastNpcAttitudes = {};
+    (d.npcs||[]).forEach(n => lastNpcAttitudes[n.id] = n.attitude || 0);
+
+    narrative.scrollTop = narrative.scrollHeight;
+  } catch(e) {
+    toast('加载失败：'+e.message);
+  }
+}
+
+// ── 构建侧边栏 ──
+function renderWorldMap(d) {
+  const section = document.getElementById('mapSection');
+  const map = document.getElementById('worldMap');
+  if (!section || !map) return;
+  const locations = d.locations || {};
+  const currentName = d.current_location || document.getElementById('currentLoc').textContent;
+  map.innerHTML = '';
+  for (const [id, name] of Object.entries(locations)) {
+    const node = document.createElement('div');
+    node.className = 'map-node' + (name === currentName ? ' current' : '');
+    node.innerHTML = `<span>${escapeHtml(name)}</span><span class="map-state">${name === currentName ? 'CURRENT' : 'OPEN'}</span>`;
+    map.appendChild(node);
+  }
+  section.style.display = Object.keys(locations).length ? 'block' : 'none';
+}
+
+function buildSidebar(d) {
+  // 玩家信息
+  const pi = document.getElementById('playerInfo');
+  pi.innerHTML = `
+    <div class="identity-card">
+      <div class="id-name">${escapeHtml(d.player_name || '林隙')}</div>
+      <div class="id-tags"><span>外来者</span><span>旧信持有人</span><span>被记录</span></div>
+      <div class="id-stats" title="世界仍会参考这些倾向，但不会把它们当成需要玩家背诵的规则。">STR ${d.attributes.strength} / AGI ${d.attributes.agility} / INT ${d.attributes.intelligence} / CHA ${d.attributes.charm}</div>
+    </div>
+  `;
+
+  // 因果卡
+  document.getElementById('cardSection').style.display = 'block';
+  const cardList = document.getElementById('cardList');
+  cardList.innerHTML = '';
+  (d.starting_cards||[]).forEach(c => {
+    const el = createCardEl(c);
+    cardList.appendChild(el);
+  });
+
+  // 初始目标提示
+  updateObjectiveHint(d);
+
+  // NPC
+  document.getElementById('npcSection').style.display = 'block';
+  const npcList = document.getElementById('npcList');
+  npcList.innerHTML = '';
+  (d.npcs||[]).forEach(n => {
+    const div = document.createElement('div');
+    div.className = 'npc-card';
+    div.id = 'npc-'+n.id;
+    div.innerHTML = `
+      <div><span class="npc-name">${n.name}</span><span class="npc-role">${n.role}</span></div>
+      <div class="npc-att neutral">态度 0</div>
+    `;
+    npcList.appendChild(div);
+  });
+}
+
+// ── 创建因果卡 DOM ──
+function createCardEl(c) {
+  const div = document.createElement('div');
+  div.className = 'causal-card new-card';
+  div.id = 'card-'+c.id;
+  div.title = '点击查看详情';
+
+  const typeClass = c.type || 'knowledge';
+  const typeLabel = {relation:'关系', knowledge:'情报', item:'物品', crime:'罪行'}[typeClass] || typeClass;
+  div.innerHTML = `
+    <div class="card-type ${typeClass}">${typeLabel}</div>
+    <div class="card-name">${c.name}</div>
+    <div class="card-desc">${(c.description||'').substring(0,60)}…</div>
+  `;
+  div.onclick = () => showCardDetail(c);
+  return div;
+}
+
+// ── 卡片详情弹窗 ──
+function showCardDetail(c) {
+  const typeLabel = {relation:'关系', knowledge:'情报', item:'物品', crime:'罪行'}[c.type] || c.type;
+  const typeClass = c.type || 'knowledge';
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.onclick = e => { if(e.target===overlay) overlay.remove(); };
+
+  // 构建效果描述
+  let effectsHtml = '';
+  const eff = c.effects || {};
+  if (eff.npc_attitude) {
+    effectsHtml += '<div>NPC态度变化：';
+    for (const [nid, v] of Object.entries(eff.npc_attitude)) {
+      effectsHtml += `<span>${nid} ${v>0?'+':''}${v}</span> `;
+    }
+    effectsHtml += '</div>';
+  }
+  if (eff.dialogue_unlock) {
+    effectsHtml += `<div>解锁对话：<span>${eff.dialogue_unlock.join('、')}</span></div>`;
+  }
+  if (eff.dice_bonus) {
+    const db = eff.dice_bonus;
+    const attrNames = {strength:'力量',agility:'敏捷',intelligence:'智力',charm:'魅力'};
+    if (db.charm) effectsHtml += `<div>骰子加成：<span>魅力 +${db.charm}</span> ${db.reason||''}</div>`;
+    if (db.agility) effectsHtml += `<div>骰子加成：<span>敏捷 +${db.agility}</span> ${db.reason||''}</div>`;
+    if (db.intelligence) effectsHtml += `<div>骰子加成：<span>智力 +${db.intelligence}</span> ${db.reason||''}</div>`;
+  }
+
+  overlay.innerHTML = `
+    <div class="modal-card">
+      <div class="m-type ${typeClass}">${typeLabel}</div>
+      <div class="m-name">${c.name}</div>
+      <div class="m-desc">${c.description||''}</div>
+      ${effectsHtml ? '<div class="m-effects">'+effectsHtml+'</div>' : ''}
+      ${c.story ? '<div class="m-story">'+c.story+'</div>' : ''}
+      <button class="m-close" onclick="this.closest('.modal-overlay').remove()">关闭</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+// ── 构建/刷新操作栏 ──
+// 按钮列表完全由后端 get_available_actions() 决定，前端只负责渲染
+// 按钮按类型分组，组间用细线分隔，支持换行和滚动
+function sendCustomAction() {
+  const input = document.getElementById('customAction');
+  const value = (input?.value || '').trim();
+  if (!value) {
+    toast('\u5148\u5199\u4e0b\u4f60\u60f3\u505a\u4ec0\u4e48。');
+    return;
+  }
+  input.value = '';
+  sendAction(value);
+}
+
+function renderComposer(bar) {
+  const composer = document.createElement('div');
+  composer.className = 'composer';
+  composer.innerHTML = `
+    <input id="customAction" class="command-input" autocomplete="off" placeholder="写下一句话。世界会判断它是否成立。" />
+    <button id="customSend" class="send-btn" type="button">提交记录</button>
+  `;
+  bar.appendChild(composer);
+  const input = composer.querySelector('#customAction');
+  const send = composer.querySelector('#customSend');
+  send.onclick = sendCustomAction;
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) sendCustomAction();
+  });
+}
+
+function refreshActionBar(d) {
+  const bar = document.getElementById('actionBar');
+  bar.innerHTML = '';
+  renderComposer(bar);
+
+  const actionWrap = document.createElement('div');
+  actionWrap.className = 'quick-actions curated-actions';
+  bar.appendChild(actionWrap);
+
+  const actions = d.available_actions || [];
+  const aiSuggestions = ((d.ai_judgement && d.ai_judgement.suggested_actions) || [])
+    .filter(Boolean)
+    .slice(0, 3);
+
+  function makeBtnFromText(text, cls = '') {
+    const btn = document.createElement('button');
+    btn.className = ('quick-btn ' + cls).trim();
+    btn.textContent = text;
+    btn.onclick = () => sendAction(text);
+    return btn;
+  }
+
+  function makeBtn(act, cls = '') {
+    const btn = document.createElement('button');
+    btn.className = ('quick-btn ' + cls).trim();
+    btn.textContent = act.label || act.text;
+    btn.onclick = () => sendAction(act.text);
+    if (act.danger) btn.classList.add('violent');
+    if (act.highlight) btn.classList.add('highlight');
+    return btn;
+  }
+
+  const primary = [];
+  aiSuggestions.forEach(text => primary.push({ kind: 'text', value: text }));
+  if (!primary.length) {
+    const sorted = [...actions].sort((a, b) => Number(!!b.highlight) - Number(!!a.highlight));
+    sorted.slice(0, 3).forEach(act => primary.push({ kind: 'action', value: act }));
+  }
+
+  if (primary.length) {
+    const label = document.createElement('span');
+    label.className = 'action-group-label primary-label';
+    label.textContent = '\u4e16\u754c\u4f4e\u8bed';
+    actionWrap.appendChild(label);
+    primary.slice(0, 3).forEach(item => {
+      actionWrap.appendChild(item.kind === 'text' ? makeBtnFromText(item.value, 'ai-suggestion primary-action') : makeBtn(item.value, 'primary-action'));
+    });
+  } else {
+    actionWrap.innerHTML = '<span class="empty-actions">\u4e16\u754c\u6682\u65f6\u6c89\u9ed8\u3002\u4f60\u53ef\u4ee5\u76f4\u63a5\u5199\u4e0b\u81ea\u5df1\u7684\u884c\u52a8\u3002</span>';
+    return;
+  }
+
+  const primaryTexts = new Set(primary.map(item => item.kind === 'text' ? item.value : item.value.text));
+  const rest = actions.filter(act => !primaryTexts.has(act.text));
+  if (rest.length) {
+    const details = document.createElement('details');
+    details.className = 'more-actions';
+    details.innerHTML = '<summary>\u66f4\u591a\u884c\u52a8</summary><div class="more-action-grid"></div>';
+    const grid = details.querySelector('.more-action-grid');
+    rest.forEach(act => grid.appendChild(makeBtn(act)));
+    actionWrap.appendChild(details);
+  }
+}
+
+function buildActionBar(d) {
+  // 不再需要，由 refreshActionBar 替代
+  refreshActionBar(d);
+}
+
+// ── 目标提示 ──
+function updateObjectiveHint(d) {
+  const section = document.getElementById('objectiveSection');
+  const hintEl = document.getElementById('objectiveHint');
+  if (!section || !hintEl) return;
+
+  const cards = d.player_cards || [];
+  const cardIds = cards.map(c => c.id);
+  const npcStates = d.npc_states || {};
+  let hint = '';
+
+  // 优先级从高到低检查
+  if (cardIds.includes('midnight_pact')) {
+    const hour = d.game_hour || 8;
+    if (hour >= 21 || hour < 6) {
+      hint = '午夜已至。去酒馆后门——玛莎在等你。';
+    } else {
+      hint = '你和玛莎约好了午夜在酒馆后门见面。在那之前……也许可以找其他人聊聊，或者四处看看。时间总会过去的。';
+    }
+  } else if (cardIds.includes('marthas_trust') && !cardIds.includes('midnight_pact')) {
+    hint = '玛莎信任你了。她似乎还有什么话没说出口——也许需要一个合适的时机。';
+  } else if (cardIds.includes('martha_stirred')) {
+    if (cardIds.includes('silver_ring')) {
+      hint = '玛莎看了旧信，防线出现了裂缝。把母亲的戒指给她看看——也许能让她彻底打开心扉。';
+    } else {
+      hint = '玛莎看到旧信时整个人僵住了。她知道些什么——想办法让她说出来。';
+    }
+  } else if (cardIds.includes('tavern_favor')) {
+    hint = '老汤姆欠你一个人情。酒馆里藏着秘密——也许可以趁他不注意的时候四处看看。';
+  } else if (cardIds.includes('caught_stealing') || cardIds.includes('beaten_by_tom')) {
+    hint = '你惹怒了老汤姆。在这个村子里，一个发怒的酒馆老板能让你的 investigation 变得非常困难。想办法缓和局势——或者避开他。';
+  } else if (cardIds.includes('blood_on_hands')) {
+    hint = '你手上沾了血。黑木村不会忘记。守卫的眼睛在盯着你——每一步都要小心。';
+  } else {
+    // 默认引导
+    const marthaAtt = (npcStates['tavern_wife'] || {}).attitude || 0;
+    if (marthaAtt <= 0) {
+      hint = '母亲的信指向了玛莎。她在酒馆。你身上有旧信和戒指——任何一样都可能让她开口。';
+    } else {
+      hint = '玛莎开始对你产生好奇了。继续和她交谈，或者给她看信和戒指。';
+    }
+  }
+
+  if (hint) {
+    section.style.display = 'block';
+    hintEl.textContent = hint;
+  } else {
+    section.style.display = 'none';
+  }
+}
+
+// ── 发送行动 ──
+
+function renderAIVerdict(container, d) {
+  const ai = d.ai_judgement;
+  if (!ai || !ai.used) return;
+  const names = {
+    possible: '\u53ef\u884c',
+    risky: '\u9ad8\u98ce\u9669',
+    impossible: '\u4e0d\u53ef\u80fd',
+    meta: '\u8d8a\u754c'
+  };
+  const riskNames = { low: '\u4f4e', medium: '\u4e2d', high: '\u9ad8', lethal: '\u81f4\u547d' };
+  const verdict = document.createElement('div');
+  verdict.className = 'ai-verdict';
+  verdict.innerHTML = `
+    <div><strong>\u4e16\u754c\u5224\u65ad</strong>${escapeHtml(names[ai.feasibility] || ai.feasibility || '\u53ef\u884c')} - ${escapeHtml(ai.reason || '\u4e16\u754c\u63a5\u53d7\u4e86\u8fd9\u4e2a\u884c\u52a8\u3002')}</div>
+    <span class="ai-risk">${escapeHtml(riskNames[ai.risk] || ai.risk || 'LOW')}</span>
+  `;
+  container.appendChild(verdict);
+}
+
+async function sendAction(action) {
+  if (isLoading) return;
+  isLoading = true;
+
+  // 禁用所有按钮
+  const controls = document.querySelectorAll('.action-bar button, .action-bar input');
+  controls.forEach(el => el.disabled = true);
+  document.querySelector('.composer')?.classList.add('loading');
+
+  const narrative = document.getElementById('narrative');
+
+  // 添加玩家行动
+  const msgEl = document.createElement('div');
+  msgEl.className = 'msg';
+  msgEl.innerHTML = `
+    <div class="player-line">${escapeHtml(action)}</div>
+    <div class="world-line thinking-line">
+      <div class="thinking-title">AI 正在推演这个世界的后果</div>
+      <div class="thinking-dots"><span></span><span></span><span></span></div>
+    </div>
+  `;
+  narrative.appendChild(msgEl);
+  compactNarrativeHistory();
+  narrative.scrollTop = narrative.scrollHeight;
+
+  try {
+    const r = await fetch('/api/action', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action})
+    });
+    const d = await r.json();
+
+    // 检查是否有骰子结果 → 展示骰子动画
+    if (d.dice_result) {
+      await showDiceAnimation(d.dice_result);
+    }
+
+    // 更新叙事
+    const worldLine = msgEl.querySelector('.world-line');
+    worldLine.classList.remove('thinking-line');
+    worldLine.textContent = d.narrative || '[无响应]';
+    worldLine.style.color = '';
+    renderAIVerdict(msgEl, d);
+
+    // 结局特殊样式
+    if (d.is_ending && d.ending) {
+      const endingBanner = document.createElement('div');
+      endingBanner.className = 'ending-block';
+      endingBanner.innerHTML = `<div class="ending-title">═══ ${d.ending.name} ═══</div>`;
+      msgEl.insertBefore(endingBanner, worldLine);
+    }
+
+    // 更新侧边栏（含因果涟漪日志）
+    updateSidebar(d);
+
+    // 更新顶栏
+    if (d.current_location) document.getElementById('currentLoc').textContent = d.current_location;
+    if (d.game_time) document.getElementById('gameTime').textContent = d.game_time;
+    renderWorldMap(d);
+    setSceneArt(d);
+    compactNarrativeHistory();
+
+    // 刷新操作栏按钮（结局时不再刷新）
+    if (!d.is_ending) {
+      refreshActionBar(d);
+    }
+
+  } catch(e) {
+    msgEl.querySelector('.world-line').textContent = '出错了：'+e.message;
+    msgEl.querySelector('.world-line').style.color = 'var(--red)';
+    // 恢复按钮状态
+    const controls = document.querySelectorAll('.action-bar button, .action-bar input');
+    controls.forEach(el => el.disabled = false);
+  }
+
+  isLoading = false;
+  document.querySelector('.composer')?.classList.remove('loading');
+  narrative.scrollTop = narrative.scrollHeight;
+}
+
+// ── 骰子动画 ──
+function showDiceAnimation(diceResult) {
+  return new Promise(resolve => {
+    const overlay = document.createElement('div');
+    overlay.className = 'dice-overlay';
+
+    const box = document.createElement('div');
+    box.className = 'dice-box';
+    overlay.appendChild(box);
+
+    const numberEl = document.createElement('div');
+    numberEl.className = 'dice-number';
+    numberEl.textContent = '?';
+    box.appendChild(numberEl);
+
+    const resultEl = document.createElement('div');
+    resultEl.className = 'dice-result';
+    box.appendChild(resultEl);
+
+    const detailEl = document.createElement('div');
+    detailEl.className = 'dice-detail';
+    box.appendChild(detailEl);
+
+    document.body.appendChild(overlay);
+
+    // 安全超时：5 秒后强制结束，防止 Promise 永久挂起
+    const safetyTimer = setTimeout(() => {
+      clearInterval(interval);
+      if (overlay.parentNode) overlay.remove();
+      resolve();
+    }, 5000);
+
+    // 滚动动画
+    let count = 0;
+    const totalFrames = 30; // 1.5秒, 每50ms一帧
+    const finalRoll = diceResult.roll;
+    const interval = setInterval(() => {
+      count++;
+      if (count < totalFrames) {
+        numberEl.textContent = Math.floor(Math.random()*20)+1;
+      } else {
+        // 最后显示真实结果
+        numberEl.textContent = finalRoll;
+        clearInterval(interval);
+
+        // 显示结果
+        const attrNames = {strength:'力量',agility:'敏捷',intelligence:'智力',charm:'魅力'};
+        const attrName = attrNames[diceResult.attribute_used] || diceResult.attribute_used;
+
+        if (diceResult.success) {
+          resultEl.className = 'dice-result success';
+          resultEl.textContent = '✓ 成功';
+        } else {
+          resultEl.className = 'dice-result failure';
+          resultEl.textContent = '✗ 失败';
+        }
+        const cb = diceResult.card_bonus;
+        const cd = diceResult.difficulty;
+        detailEl.textContent = attrName + diceResult.attribute_value + ' ×2 + 卡牌' + (cb>=0?'+':'') + cb + ' + 难度' + (cd>=0?'+':'') + cd + ' = 需≤' + diceResult.threshold;
+
+        // 1.5秒后消失
+        setTimeout(() => {
+          clearTimeout(safetyTimer);
+          overlay.style.animation = 'fadeIn 0.15s ease reverse';
+          setTimeout(() => { overlay.remove(); resolve(); }, 150);
+        }, 1200);
+      }
+    }, 50);
+  });
+}
+
+// ── 更新侧边栏 ──
+function updateSidebar(d) {
+  // 更新因果涟漪日志
+  const metaList = d.causal_meta || [];
+  if (metaList.length > 0) {
+    const logSection = document.getElementById('causalLogSection');
+    const logDiv = document.getElementById('causalLog');
+    logSection.style.display = 'block';
+    logDiv.innerHTML = metaList.map(m => '<div style="margin-bottom:4px;">' + m + '</div>').join('');
+  }
+
+  // 更新 NPC 状态
+  const npcStates = d.npc_states || {};
+  for (const [nid, st] of Object.entries(npcStates)) {
+    const el = document.getElementById('npc-'+nid);
+    if (!el) continue;
+
+    // 存活状态
+    if (!st.alive) {
+      el.classList.add('dead');
+      el.querySelector('.npc-att').textContent = '☠ 已死亡';
+      el.querySelector('.npc-att').className = 'npc-att';
+      continue;
+    }
+
+    // 态度
+    const att = st.attitude || 0;
+    const attEl = el.querySelector('.npc-att');
+    attEl.textContent = '态度 '+(att>=0?'+':'')+att;
+
+    let attClass = 'neutral';
+    if (att >= 20) attClass = 'positive';
+    else if (att <= -20) attClass = 'negative';
+    attEl.className = 'npc-att '+attClass;
+
+    // 高亮变化
+    if (lastNpcAttitudes[nid] !== undefined && lastNpcAttitudes[nid] !== att) {
+      el.classList.add('att-highlight');
+      setTimeout(() => el.classList.remove('att-highlight'), 1200);
+    }
+    lastNpcAttitudes[nid] = att;
+  }
+
+  // 更新因果卡
+  const newCards = d.new_cards || [];
+  const allCards = d.player_cards || [];
+
+  // 检查是否有新卡
+  for (const nc of newCards) {
+    if (!knownCardIds.has(nc.id)) {
+      knownCardIds.add(nc.id);
+      // 播放提示
+      toast('获得因果卡：'+nc.name);
+    }
+  }
+
+  // 重建卡片列表
+  const cardList = document.getElementById('cardList');
+  const existingIds = new Set();
+  cardList.querySelectorAll('.causal-card').forEach(el => {
+    const id = el.id.replace('card-','');
+    existingIds.add(id);
+  });
+
+  // 添加新卡
+  for (const c of allCards) {
+    if (!existingIds.has(c.id)) {
+      const el = createCardEl(c);
+      cardList.appendChild(el);
+    }
+  }
+
+  document.getElementById('cardSection').style.display = allCards.length ? 'block' : 'none';
+
+  // 更新目标提示
+  updateObjectiveHint(d);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI智能管报助手 - DataPilot</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <span class="logo-icon">◆</span>
+                <span class="logo-text">DataPilot</span>
+            </div>
+            <span class="subtitle">AI智能管报助手</span>
+        </div>
+        <div class="header-right">
+            <span class="status-badge" id="aiStatus">AI模拟模式</span>
+            <span class="date" id="currentDate"></span>
+        </div>
+    </header>
+
+    <!-- 导航标签 -->
+    <nav class="tabs">
+        <button class="tab active" data-tab="dashboard">
+            <span class="tab-icon">📊</span>
+            <span>数据仪表盘</span>
+        </button>
+        <button class="tab" data-tab="anomaly">
+            <span class="tab-icon">🔍</span>
+            <span>异常猎手</span>
+            <span class="tab-badge" id="anomalyCount">10</span>
+        </button>
+        <button class="tab" data-tab="report">
+            <span class="tab-icon">📋</span>
+            <span>岗位化日报</span>
+        </button>
+        <button class="tab" data-tab="query">
+            <span class="tab-icon">💬</span>
+            <span>自然语言查数</span>
+        </button>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+
+        <!-- ========== 仪表盘 ========== -->
+        <section class="tab-content active" id="dashboard">
+            <!-- 核心指标卡片 -->
+            <div class="metric-cards">
+                <div class="metric-card">
+                    <div class="metric-label">PC品类总收入</div>
+                    <div class="metric-value" id="pcIncome">--</div>
+                    <div class="metric-trend up">1-8月累计</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">PC总销量</div>
+                    <div class="metric-value" id="pcSales">--</div>
+                    <div class="metric-trend">平均客单价 <span id="avgPrice">--</span></div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">O2O订单总数</div>
+                    <div class="metric-value" id="orderTotal">--</div>
+                    <div class="metric-trend">成交率 <span id="dealRate" class="up">--</span></div>
+                </div>
+                <div class="metric-card warning">
+                    <div class="metric-label">业务异常</div>
+                    <div class="metric-value"><span id="redCount">0</span><span class="metric-unit">红</span> <span id="yellowCount">0</span><span class="metric-unit">黄</span></div>
+                    <div class="metric-trend">AI自动检测中</div>
+                </div>
+            </div>
+
+            <!-- 图表区域 -->
+            <div class="chart-grid">
+                <div class="chart-card large">
+                    <div class="chart-header">
+                        <h3>月度收入与销量趋势</h3>
+                        <span class="chart-tag">PC品类 · 2026年1-8月</span>
+                    </div>
+                    <div class="chart-container" id="monthlyChart"></div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>品牌收入分布</h3>
+                        <span class="chart-tag">CR3 = 88%</span>
+                    </div>
+                    <div class="chart-container" id="brandChart"></div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>平台收入与毛利率</h3>
+                        <span class="chart-tag">7个平台</span>
+                    </div>
+                    <div class="chart-container" id="platformChart"></div>
+                </div>
+                <div class="chart-card large">
+                    <div class="chart-header">
+                        <h3>品类成交率对比</h3>
+                        <span class="chart-tag">O2O订单 · 报价→成交转化</span>
+                    </div>
+                    <div class="chart-container" id="categoryChart"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 异常猎手 ========== -->
+        <section class="tab-content" id="anomaly">
+            <div class="anomaly-header">
+                <div>
+                    <h2>AI异常猎手</h2>
+                    <p class="anomaly-desc">自动扫描50+业务指标，跨维度对比分析，主动发现异常并给出可执行建议</p>
+                </div>
+                <div class="anomaly-filters">
+                    <button class="filter-btn active" data-severity="all">全部</button>
+                    <button class="filter-btn red" data-severity="red">🔴 严重</button>
+                    <button class="filter-btn yellow" data-severity="yellow">🟡 警告</button>
+                    <button class="filter-btn blue" data-severity="blue">🔵 关注</button>
+                    <button class="filter-btn info" data-severity="info">ℹ️ 信息</button>
+                </div>
+            </div>
+            <div class="anomaly-list" id="anomalyList">
+                <!-- 动态生成 -->
+            </div>
+        </section>
+
+        <!-- ========== 岗位化日报 ========== -->
+        <section class="tab-content" id="report">
+            <div class="report-header">
+                <h2>岗位化日报</h2>
+                <p>AI根据不同岗位需求，自动筛选关键指标，生成针对性日报</p>
+            </div>
+            <div class="role-selector">
+                <button class="role-btn active" data-role="management">
+                    <span class="role-icon">👔</span>
+                    <span class="role-name">管理层</span>
+                    <span class="role-desc">3条核心洞察+风险+机会</span>
+                </button>
+                <button class="role-btn" data-role="sales">
+                    <span class="role-icon">💼</span>
+                    <span class="role-name">销售岗</span>
+                    <span class="role-desc">品牌/平台排行+行动项</span>
+                </button>
+                <button class="role-btn" data-role="operations">
+                    <span class="role-icon">⚙️</span>
+                    <span class="role-name">运营岗</span>
+                    <span class="role-desc">异常预警+退货率+订单状态</span>
+                </button>
+                <button class="role-btn" data-role="finance">
+                    <span class="role-icon">💰</span>
+                    <span class="role-name">财务岗</span>
+                    <span class="role-desc">利润率+账期+资金占用</span>
+                </button>
+            </div>
+            <div class="report-content" id="reportContent">
+                <!-- 动态生成 -->
+            </div>
+        </section>
+
+        <!-- ========== 自然语言查数 ========== -->
+        <section class="tab-content" id="query">
+            <div class="query-container">
+                <div class="query-header">
+                    <h2>自然语言查数</h2>
+                    <p>用自然语言提问，AI自动理解问题、选择数据源、计算并给出结论</p>
+                </div>
+                <div class="query-suggestions">
+                    <span class="suggestion-label">试试问：</span>
+                    <button class="suggestion-btn" data-question="哪个平台亏钱最多？">哪个平台亏钱最多？</button>
+                    <button class="suggestion-btn" data-question="整体成交率怎么样？哪些品类转化差？">成交率怎么样？</button>
+                    <button class="suggestion-btn" data-question="退货率情况如何？哪个平台最高？">退货率情况如何？</button>
+                    <button class="suggestion-btn" data-question="6月收入为什么暴涨？">6月收入为什么暴涨？</button>
+                    <button class="suggestion-btn" data-question="品牌集中度高吗？有什么风险？">品牌集中度高吗？</button>
+                </div>
+                <div class="chat-container" id="chatContainer">
+                    <div class="chat-message ai">
+                        <div class="chat-avatar">AI</div>
+                        <div class="chat-bubble">
+                            你好！我是AI数据分析助手。你可以用自然语言问我任何关于销售数据的问题，比如"哪个平台亏钱最多？""6月收入为什么暴涨？"等。
+                        </div>
+                    </div>
+                </div>
+                <div class="query-input-area">
+                    <input type="text" id="queryInput" placeholder="输入你的问题，例如：哪个平台毛利率最高？" class="query-input">
+                    <button id="querySendBtn" class="send-btn">发送</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 异常详情弹窗 -->
+    <div class="modal" id="anomalyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">异常详情</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

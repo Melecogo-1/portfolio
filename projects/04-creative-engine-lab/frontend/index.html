@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Creative Scout | Interactive Portfolio</title>
+    <meta name="description" content="角色引导的 AIGC、3D 与互动作品集" />
+    <link rel="stylesheet" href="./styles.css?v=resume-dossier-01" />
+  </head>
+  <body>
+    <main class="portfolio-shell">
+      <section class="stage" id="stage">
+        <div id="threeStage" class="three-stage" aria-label="3D portfolio stage"></div>
+        <canvas id="fallbackStage" class="fallback-stage" aria-hidden="true"></canvas>
+        <div class="stage-vignette" aria-hidden="true"></div>
+        <div class="ground-shadow" aria-hidden="true"></div>
+        <div class="ground-ring ring-one" aria-hidden="true"></div>
+        <div class="ground-ring ring-two" aria-hidden="true"></div>
+        <div class="noise-layer" aria-hidden="true"></div>
+        <div class="project-signal" id="projectSignal" aria-hidden="true"><span></span><small>ARCHIVE LINK STABLE</small></div>
+
+        <header class="site-mark">
+          <a class="brand" href="#stage" aria-label="Creative Scout 首页">
+            <span class="brand-mark">CS</span>
+            <span>Creative Scout</span>
+          </a>
+          <span class="year">Portfolio 2026</span>
+          <button class="resume-toggle" id="resumeToggle" type="button" aria-controls="resumeDossier" aria-expanded="false">履历</button>
+        </header>
+
+        <section class="hero-copy" aria-label="Portfolio statement">
+          <p>AIGC / 3D / INTERACTION</p>
+          <h1>角色即入口。</h1>
+        </section>
+
+        <p class="guide-whisper">灵感采集员正在整理三份档案</p>
+        <nav class="project-orbit" id="projectOrbit" aria-label="精选项目"></nav>
+
+        <aside class="project-file" id="projectFile" aria-live="polite" aria-hidden="true">
+          <button class="close-file" type="button" id="closeProjectFile" aria-label="关闭项目档案">×</button>
+          <div class="file-index" id="fileType">档案 01</div>
+          <div class="file-cover"><img id="fileCover" alt="项目预览" /></div>
+          <h2 id="fileTitle">Dream Weaver</h2>
+          <p id="fileOutcome"></p>
+          <p id="fileDesc"></p>
+          <div class="file-credential" id="fileCredential"></div>
+          <div class="file-proof" id="fileProof"></div>
+          <div class="mini-tags" id="fileTags"></div>
+          <button class="launch-project" type="button" id="launchProject">进入体验 <span>↗</span></button>
+        </aside>
+
+        <aside class="terminal-panel" id="engine" aria-hidden="true">
+          <button class="close-file" type="button" id="closeEngine" aria-label="关闭创意终端">×</button>
+          <p class="terminal-kicker">CREATIVE TERMINAL</p>
+          <h2>输入一句灵感</h2>
+          <textarea id="briefInput" rows="4" placeholder="例如：雨夜赛博茶馆，茶客都没有影子"></textarea>
+          <div class="quick-prompts" id="quickPrompts"></div>
+          <button class="generate-action" id="generateBtn" type="button"><span>生成创意档案</span><span>→</span></button>
+          <p class="engine-state" id="reactorState">READY</p>
+        </aside>
+
+        <aside class="result-file" id="resultPanel" aria-live="polite">
+          <button class="close-file" type="button" id="closeResult" aria-label="关闭生成档案">×</button>
+          <p class="terminal-kicker">GENERATED FILE</p>
+          <h2 id="conceptTitle">创意档案</h2>
+          <p id="creativeThesis"></p>
+          <div class="brief-facts"><span id="audience"></span><span id="outputFormat"></span></div>
+          <p class="worldview" id="worldview"></p>
+          <div class="palette" id="palette"></div>
+          <div class="tag-list" id="keywords"></div>
+          <pre id="imagePrompt"></pre>
+          <button class="copy-prompt" id="copyPrompt" type="button">复制 Prompt</button>
+        </aside>
+
+        <aside class="resume-dossier" id="resumeDossier" aria-hidden="true" aria-label="凌煜圣个人简历">
+          <button class="close-file" type="button" id="closeResume" aria-label="关闭个人简历">×</button>
+          <section class="resume-identity">
+            <div class="resume-photo"><img src="./assets/profile/ling-yusheng.jpg" alt="凌煜圣" /></div>
+            <p class="resume-kicker">PERSONNEL FILE / 2026</p>
+            <h2>凌煜圣</h2>
+            <p class="resume-name">LING YUSHENG</p>
+            <p class="resume-role">AIGC 视觉设计 / 产品 / 应用开发</p>
+            <div class="resume-contact"><span>17783190642</span><span>重庆财经学院</span><span>人工智能 · 2027届</span></div>
+            <a class="resume-download" href="./assets/resume/ling-yusheng-fullstack-resume.pdf" download>下载投递版 PDF <span>↓</span></a>
+          </section>
+          <section class="resume-content">
+            <p class="resume-kicker">CREATIVE TECHNOLOGIST</p>
+            <h3>把视觉概念做成可运行的体验。</h3>
+            <p class="resume-lead">人工智能专业在读，关注 AIGC 创作、三维可视化与交互应用。擅长在概念、视觉资产和可运行原型之间搭建完整链路。</p>
+            <div class="resume-grid">
+              <section>
+                <h4>能力</h4>
+                <p><b>AIGC 创作与工作流</b>图像 / 视频生成方向、Prompt 系统、视觉概念拆解与创意流程设计。</p>
+                <p><b>三维可视化</b>实景结构还原、三维建模、模型轻量化、镜头与大屏实时展示适配。</p>
+                <p><b>应用原型</b>Python / Flask、Web 交互、AI 接口接入、交互叙事与状态系统设计。</p>
+              </section>
+              <section>
+                <h4>教育</h4>
+                <p><b>重庆财经学院</b>人工智能专业 · 2027届毕业</p>
+                <h4 class="resume-subhead">目标方向</h4>
+                <p>AIGC 视觉设计师<br />AIGC 产品经理<br />AIGC 应用开发工程师</p>
+              </section>
+            </div>
+            <section class="resume-experience">
+              <h4>实习经历 / 重庆云幕科技有限公司</h4>
+              <p class="experience-role">三维建模与可视化项目实习</p>
+              <p>参与城市基建动画、医疗数字沙盘两类可视化项目，负责三维建模、模型修正与轻量化，在实景高精度还原、镜头适配和实时展示性能之间完成平衡。</p>
+              <ul>
+                <li>重庆曾家岩隧道动画：修正主体、匝道与通风设施的穿模、失真问题，精简面数并反复适配镜头。</li>
+                <li>上海人民医院数字沙盘：依据施工图搭建全院区模型，完成楼宇、道路、绿化还原与统一轻量化。</li>
+                <li>两个月完成隧道修正与医院整套沙盘交付，一次性验收；沉淀轻量化流程，缩短后续渲染调试时间。</li>
+              </ul>
+            </section>
+            <section class="resume-projects">
+              <h4>作品方向</h4>
+              <span>Dream Weaver · AI 叙事模拟</span><span>Silent Asylum · 互动惊悚</span><span>Creative Engine Lab · AIGC 创意工具</span>
+            </section>
+          </section>
+        </aside>
+        <button class="terminal-dock" id="engineToggle" type="button" aria-expanded="false" aria-controls="engine">
+          <span class="terminal-icon">AI</span>
+          <span><strong>创意终端</strong><small>投递一条灵感</small></span>
+        </button>
+
+        <footer class="tech-strip"><span id="serverStatus">LOCAL ENGINE</span><span>DeepSeek · Three.js · Python</span></footer>
+      </section>
+    </main>
+    <script src="./vendor/three.min.js"></script>
+    <script src="./vendor/GLTFLoader.js"></script>
+    <script src="./app.js?v=resume-dossier-01"></script>
+  </body>
+</html>

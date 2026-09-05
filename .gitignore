@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# 环境变量
+.env
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 日志与临时
+*.log
+*.tmp
+
+# 前端依赖
+node_modules/
+
+# 运行时数据库 / 存档（启动时可自举重建）
+projects/03-multi-service-deploy/provenance-lab/data/provenance.db
+projects/05-silent-asylum/saves/
+
+# 企业经营明细数据（脱敏合规，仅保留聚合样例，见 projects/01-ai-datapilot/data/DATA_NOTE.md）
+projects/01-ai-datapilot/data/raw/
+projects/01-ai-datapilot/data/processed/*_cleaned.csv
