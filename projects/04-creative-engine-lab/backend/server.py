@@ -17,6 +17,8 @@ DATA = ROOT / "data"
 DB_PATH = DATA / "concepts.db"
 HOST = "127.0.0.1"
 PORT = 8000
+MAX_BODY_BYTES = 64 * 1024   # 单次请求体上限，避免异常大 body 占用内存
+MAX_BRIEF_LEN = 500          # 创作简述长度上限
 
 
 def ensure_db() -> None:
@@ -269,7 +271,19 @@ class Handler(BaseHTTPRequestHandler):
         if parsed.path != "/api/generate":
             self.send_json({"error": "Not found"}, 404)
             return
-        length = int(self.headers.get("Content-Length", "0"))
+        try:
+            length = int(self.headers.get("Content-Length", "0"))
+        except (TypeError, ValueError):
+            self.send_json({"error": "非法请求头。"}, 400)
+            return
+        if length <= 0 or length > MAX_BODY_BYTES:
+            self.close_connection = True
+            try:
+                self.rfile.read(min(max(length, 0), MAX_BODY_BYTES))
+            except Exception:
+                pass
+            self.send_json({"error": "请求体为空或超出大小上限。"}, 400)
+            return
         raw = self.rfile.read(length).decode("utf-8")
         try:
             payload = json.loads(raw or "{}")
@@ -279,6 +293,9 @@ class Handler(BaseHTTPRequestHandler):
         brief = str(payload.get("brief", "")).strip()
         if len(brief) < 2:
             self.send_json({"error": "请先输入一个更具体的创意主题。"}, 400)
+            return
+        if len(brief) > MAX_BRIEF_LEN:
+            self.send_json({"error": "主题请控制在 500 字以内。"}, 400)
             return
         result = generate_concept(brief)
         concept_id = save_concept(brief, result)

@@ -146,12 +146,12 @@ def initialize() -> None:
         }.items():
             if name not in columns:
                 connection.execute(f"ALTER TABLE assets ADD COLUMN {name} {definition}")
-        connection.execute("UPDATE assets SET project = '深海遗墟' WHERE is_seed = 1 AND storage_kind = 'upload' AND project = '未归档项目'")
+        connection.execute("UPDATE assets SET project = '图像溯源 · 种子谱系' WHERE is_seed = 1 AND storage_kind = 'upload'")
         connection.execute("UPDATE assets SET project = '公共参考素材库' WHERE storage_kind = 'reference' AND project = '未归档项目'")
         count = connection.execute("SELECT COUNT(*) FROM assets WHERE is_seed = 1").fetchone()[0]
         titles = [] if count else ["原始构图 / Reef Signal", "色彩探索 / Cyan Bloom", "镜头校准 / Amber Cut", "定稿 / Abyssal Archive"]
         notes = [] if count else [
-            "从深海遗墟的构图草案开始，记录空间层级与中心光源。",
+            "从种子谱系的初始构图开始，记录空间层级与中心光源。",
             "保留构图，提升冷青色的发光面积，测试主体的可读性。",
             "加入琥珀色动线作为第二层叙事信号，避免全画面同温。",
             "收束为定稿：压低背景信息密度，保留可识别的门形轮廓。",
@@ -164,9 +164,9 @@ def initialize() -> None:
             blob = target.read_bytes()
             result = image_analysis(blob)
             cursor = connection.execute("""
-                INSERT INTO assets (title, filename, mime, bytes, width, height, mode, colors, average_color, phash, exif, parent_id, notes, created_at, is_seed)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
-            """, (title, filename, "image/png", len(blob), result["width"], result["height"], result["mode"], json.dumps(result["colors"]), result["average_color"], result["phash"], json.dumps(result["exif"]), parent, note, now()))
+                INSERT INTO assets (title, filename, mime, bytes, width, height, mode, colors, average_color, phash, exif, parent_id, notes, created_at, is_seed, project)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)
+            """, (title, filename, "image/png", len(blob), result["width"], result["height"], result["mode"], json.dumps(result["colors"]), result["average_color"], result["phash"], json.dumps(result["exif"]), parent, note, now(), "图像溯源 · 种子谱系"))
             parent = cursor.lastrowid
 
         references = [
@@ -328,7 +328,13 @@ class Handler(BaseHTTPRequestHandler):
         try:
             length = int(self.headers.get("Content-Length", "0"))
             if length <= 0 or length > MAX_UPLOAD_BYTES * 2:
-                raise ValueError("请求体大小不符合要求。")
+                self.close_connection = True
+                try:
+                    self.rfile.read(min(max(length, 0), MAX_UPLOAD_BYTES * 2))
+                except Exception:
+                    pass
+                self.json(HTTPStatus.BAD_REQUEST, {"error": "请求体超过 16 MB 上限。"})
+                return
             payload = json.loads(self.rfile.read(length).decode("utf-8"))
             if path == "/api/assets/batch":
                 created, errors = [], []
@@ -363,7 +369,15 @@ class Handler(BaseHTTPRequestHandler):
     def serve_file(self, path: Path) -> None:
         try:
             path = path.resolve()
-            if not (str(path).startswith(str(FRONTEND.resolve())) or str(path).startswith(str(MEDIA.resolve()))) or not path.is_file():
+            inside = False
+            for _root in (FRONTEND.resolve(), MEDIA.resolve()):
+                try:
+                    path.relative_to(_root)
+                    inside = True
+                    break
+                except ValueError:
+                    continue
+            if not inside or not path.is_file():
                 raise FileNotFoundError
             body = path.read_bytes()
             content_type = mimetypes.guess_type(path.name)[0] or "application/octet-stream"

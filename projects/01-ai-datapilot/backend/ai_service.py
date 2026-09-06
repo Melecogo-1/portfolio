@@ -102,7 +102,8 @@ class AIService:
         try:
             result = json.loads(response)
             return result
-        except:
+        except (json.JSONDecodeError, TypeError, KeyError):
+            # 模型未按约定返回 JSON 时原样呈现文本，不吞裸异常、不伪装成结构化结果
             return {'answer': response, 'data_source': 'AI生成', 'confidence': 0.7}
 
     def _build_data_context(self):
