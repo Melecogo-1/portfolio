@@ -14,6 +14,7 @@
 - `pc_platform_analysis.csv`：平台维度汇总
 - `pc_brand_analysis.csv`：品牌维度汇总
 - `business_findings.json`：自动 / 人工标注的业务发现
+- `orders_cleaned.csv`：**脱敏采样，不是真实明细**。由 `tools/generate_sample_orders.py` 依据上面三张聚合表中的真实品牌、平台、客单价，以及可公开的成交率，用固定随机种子重建，共 2800 行、不含任何真实客户或个人信息，仅用于离线跑通订单类图表；其统计结果（如成交率、状态分布）量级接近真实分布，但不等于全量。看板顶部的 PC 营收 / 销量仍来自上面三张真实聚合表，不受采样影响。
 
 ## 如何在本地复现完整数据
 

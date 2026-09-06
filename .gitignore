@@ -27,3 +27,5 @@ projects/05-silent-asylum/saves/
 # 企业经营明细数据（脱敏合规，仅保留聚合样例，见 projects/01-ai-datapilot/data/DATA_NOTE.md）
 projects/01-ai-datapilot/data/raw/
 projects/01-ai-datapilot/data/processed/*_cleaned.csv
+# 例外：orders_cleaned.csv 是 tools/generate_sample_orders.py 生成的脱敏采样（非真实明细），随仓公开以便离线跑通看板
+!projects/01-ai-datapilot/data/processed/orders_cleaned.csv

@@ -5,6 +5,8 @@
 - **技术栈**：Render Blueprint（IaC）· Python 标准库 `ThreadingHTTPServer` · gunicorn · Pillow · SQLite
 - **周期**：2026.02 – 2026.05，独立完成
 
+> **怎么看**：本目录是部署蓝图加溯源服务源码。`render.yaml` 供 Render 按蓝图编排四个服务；溯源的上传与谱系交互需本地启动（端口 8010）——直接静态打开 `provenance-lab/frontend/index.html` 会提示无法连接服务，这是因为它依赖后端，并非页面损坏。
+
 ## 一份蓝图编四个服务
 
 | 服务 | 运行时 | 启动方式 | 源码位置 |

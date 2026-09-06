@@ -1,5 +1,5 @@
 // ========== 全局变量 ==========
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = '/api';  // 同源相对路径：本地由 Flask 直接提供前端，无需写死 localhost
 let charts = {};
 let allFindings = [];
 let currentRole = 'management';

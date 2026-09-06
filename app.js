@@ -33,7 +33,7 @@ const projects = [
     ],
     tags: ['Python', 'Flask', 'pandas', 'ECharts', 'DeepSeek', '数据脱敏'],
     cover: null, useAbstract: true,
-    launchUrl: null,
+    launchUrl: './projects/01-ai-datapilot/case-study/index.html',
   },
   {
     title: 'Dream Weaver',
